@@ -1,0 +1,83 @@
+import { create } from 'zustand';
+import { supabase, hasSupabaseConfig } from '../lib/supabase';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'user' | 'admin';
+}
+
+interface UserStore {
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (user: User) => void;
+  logout: () => Promise<void>;
+  initializeAuth: () => void;
+}
+
+export const useUserStore = create<UserStore>((set) => ({
+  user: null,
+  isAuthenticated: false,
+  login: (user) => set({ user, isAuthenticated: true }),
+  logout: async () => {
+    if (hasSupabaseConfig && supabase) {
+      await supabase.auth.signOut();
+    }
+    set({ user: null, isAuthenticated: false });
+  },
+  initializeAuth: () => {
+    if (hasSupabaseConfig && supabase) {
+      const fetchProfile = async (userId: string, email: string, metadata: any) => {
+        try {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', userId)
+            .single();
+
+          if (error) throw error;
+
+          set({
+            user: {
+              id: userId,
+              name: metadata?.full_name || email?.split('@')[0] || 'User',
+              email: email || '',
+              role: profile?.role || 'user',
+            },
+            isAuthenticated: true,
+          });
+        } catch (err) {
+          console.error('Error fetching user profile:', err);
+          // Fallback to basic user info if profile fetch fails
+          set({
+            user: {
+              id: userId,
+              name: metadata?.full_name || email?.split('@')[0] || 'User',
+              email: email || '',
+              role: 'user',
+            },
+            isAuthenticated: true,
+          });
+        }
+      };
+
+      // Get initial session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          fetchProfile(session.user.id, session.user.email || '', session.user.user_metadata);
+        }
+      });
+
+      // Listen for auth changes
+      supabase.auth.onAuthStateChange((event, session) => {
+        if (session?.user) {
+          fetchProfile(session.user.id, session.user.email || '', session.user.user_metadata);
+        } else {
+          set({ user: null, isAuthenticated: false });
+        }
+      });
+    }
+  }
+}));
+
