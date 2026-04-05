@@ -234,42 +234,50 @@ export function UserDashboard() {
                                 <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                               </div>
                             ) : orderItems[order.id]?.length > 0 ? (
-                              <div className="space-y-3">
-                                {orderItems[order.id].map((item: any) => (
-                                  <div key={item.id} className="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all">
-                                    <div className="flex items-center gap-3">
-                                      <div className="h-12 w-12 rounded-md bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
-                                        <img 
-                                          src={item.products?.images?.[0] || 'https://via.placeholder.com/150'} 
-                                          alt={item.products?.name}
-                                          className="h-full w-full object-cover"
-                                          referrerPolicy="no-referrer"
-                                        />
+                              (() => {
+                                const subtotal = orderItems[order.id].reduce((sum: number, item: any) => sum + (item.quantity * item.price), 0);
+                                const shipping = order.total_amount - subtotal;
+                                return (
+                                  <div className="space-y-3">
+                                    {orderItems[order.id].map((item: any) => (
+                                      <div key={item.id} className="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all">
+                                        <div className="flex items-center gap-3">
+                                          <div className="h-12 w-12 rounded-md bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
+                                            <img 
+                                              src={item.products?.images?.[0] || 'https://via.placeholder.com/150'} 
+                                              alt={item.products?.name}
+                                              className="h-full w-full object-cover"
+                                              referrerPolicy="no-referrer"
+                                            />
+                                          </div>
+                                          <div>
+                                            <p className="text-sm font-medium text-gray-900">{item.products?.name || 'Unknown Product'}</p>
+                                            <p className="text-xs text-gray-500">Qty: {item.quantity} × ৳ {item.price}</p>
+                                          </div>
+                                        </div>
+                                        <p className="text-sm font-semibold text-gray-900">৳ {item.quantity * item.price}</p>
                                       </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-900">{item.products?.name || 'Unknown Product'}</p>
-                                        <p className="text-xs text-gray-500">Qty: {item.quantity} × ৳ {item.price}</p>
+                                    ))}
+                                    
+                                    <div className="pt-3 border-t border-gray-100 mt-4">
+                                      <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                        <span>Subtotal</span>
+                                        <span>৳ {subtotal}</span>
+                                      </div>
+                                      <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                        <span>Shipping</span>
+                                        <span className={shipping === 0 ? "text-green-600 font-medium" : "text-gray-900 font-medium"}>
+                                          {shipping === 0 ? 'Free' : `৳ ${shipping}`}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-base font-bold text-gray-900 mt-2">
+                                        <span>Total Amount</span>
+                                        <span>৳ {order.total_amount}</span>
                                       </div>
                                     </div>
-                                    <p className="text-sm font-semibold text-gray-900">৳ {item.quantity * item.price}</p>
                                   </div>
-                                ))}
-                                
-                                <div className="pt-3 border-t border-gray-100 mt-4">
-                                  <div className="flex justify-between text-sm text-gray-600 mb-1">
-                                    <span>Subtotal</span>
-                                    <span>৳ {order.total_amount}</span>
-                                  </div>
-                                  <div className="flex justify-between text-sm text-gray-600 mb-1">
-                                    <span>Shipping</span>
-                                    <span className="text-green-600 font-medium">Free</span>
-                                  </div>
-                                  <div className="flex justify-between text-base font-bold text-gray-900 mt-2">
-                                    <span>Total Amount</span>
-                                    <span>৳ {order.total_amount}</span>
-                                  </div>
-                                </div>
-                              </div>
+                                );
+                              })()
                             ) : (
                               <p className="text-sm text-gray-500 py-2 italic">No items found for this order.</p>
                             )}
