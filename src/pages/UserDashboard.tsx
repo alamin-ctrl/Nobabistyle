@@ -1,6 +1,6 @@
 import { useUserStore } from '../store/useUserStore';
 import { Navigate } from 'react-router-dom';
-import { Package, Download, Settings, User, Save, Loader2 } from 'lucide-react';
+import { Package, Download, Settings, User, Save, Loader2, ChevronDown, ChevronUp, ShoppingBag } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
@@ -15,6 +15,10 @@ export function UserDashboard() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [ordersError, setOrdersError] = useState<string | null>(null);
+  
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [orderItems, setOrderItems] = useState<Record<string, any[]>>({});
+  const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (user?.name) {
@@ -51,6 +55,40 @@ export function UserDashboard() {
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
+
+  const fetchOrderItems = async (orderId: string) => {
+    if (orderItems[orderId]) return;
+
+    try {
+      setLoadingItems(prev => ({ ...prev, [orderId]: true }));
+      const { data, error } = await supabase
+        .from('order_items')
+        .select(`
+          *,
+          products (
+            name,
+            image_url
+          )
+        `)
+        .eq('order_id', orderId);
+
+      if (error) throw error;
+      setOrderItems(prev => ({ ...prev, [orderId]: data || [] }));
+    } catch (error) {
+      console.error('Error fetching order items:', error);
+    } finally {
+      setLoadingItems(prev => ({ ...prev, [orderId]: false }));
+    }
+  };
+
+  const toggleOrderDetails = (orderId: string) => {
+    if (expandedOrderId === orderId) {
+      setExpandedOrderId(null);
+    } else {
+      setExpandedOrderId(orderId);
+      fetchOrderItems(orderId);
+    }
+  };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,53 +184,128 @@ export function UserDashboard() {
               ) : orders.length > 0 ? (
                 <div className="divide-y divide-gray-200">
                   {orders.map((order) => (
-                    <div key={order.id} className="p-6 hover:bg-gray-50 transition-colors">
-                      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
-                        <div>
-                          <p className="text-sm text-gray-500">Order ID: <span className="font-mono text-gray-900">{order.id.split('-')[0]}</span></p>
-                          <p className="text-sm text-gray-500">Date: <span className="text-gray-900">{new Date(order.created_at).toLocaleDateString()}</span></p>
-                        </div>
-                        <div className="text-left sm:text-right">
-                          <p className="font-medium text-gray-900">৳ {order.total_amount}</p>
-                          <div className="flex flex-col sm:items-end gap-1 mt-1">
-                            <span className={`inline-block text-[10px] uppercase tracking-wider font-bold rounded-full px-2 py-0.5 ${
-                              order.payment_status === 'paid' ? 'bg-green-100 text-green-700 border border-green-200' :
-                              order.payment_status === 'refunded' ? 'bg-gray-100 text-gray-700 border border-gray-200' :
-                              'bg-red-100 text-red-700 border border-red-200'
-                            }`}>
-                              {order.payment_status || 'Unpaid'}
-                            </span>
-                            <span className={`inline-block text-xs font-medium rounded-full px-2.5 py-1 ${
-                              order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                              order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                              order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                            </span>
+                    <div key={order.id} className="divide-y divide-gray-100">
+                      <div 
+                        className={`p-6 hover:bg-gray-50 transition-colors cursor-pointer ${expandedOrderId === order.id ? 'bg-gray-50' : ''}`}
+                        onClick={() => toggleOrderDetails(order.id)}
+                      >
+                        <div className="flex flex-col sm:flex-row justify-between gap-4">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="text-sm font-medium text-gray-900">Order #{order.id.split('-')[0].toUpperCase()}</p>
+                              {expandedOrderId === order.id ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                            </div>
+                            <p className="text-xs text-gray-500">Placed on {new Date(order.created_at).toLocaleDateString()} at {new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                          </div>
+                          <div className="text-left sm:text-right">
+                            <p className="font-bold text-gray-900">৳ {order.total_amount}</p>
+                            <div className="flex flex-wrap sm:justify-end gap-2 mt-2">
+                              <span className={`inline-flex items-center text-[10px] uppercase tracking-wider font-bold rounded-full px-2 py-0.5 border ${
+                                order.payment_status === 'paid' ? 'bg-green-50 text-green-700 border-green-200' :
+                                order.payment_status === 'refunded' ? 'bg-gray-50 text-gray-600 border-gray-200' :
+                                'bg-red-50 text-red-700 border-red-200'
+                              }`}>
+                                {order.payment_status || 'Unpaid'}
+                              </span>
+                              <span className={`inline-flex items-center text-[10px] uppercase tracking-wider font-bold rounded-full px-2 py-0.5 border ${
+                                order.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                order.status === 'processing' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                order.status === 'shipped' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                order.status === 'delivered' ? 'bg-green-50 text-green-700 border-green-200' :
+                                'bg-red-50 text-red-700 border-red-200'
+                              }`}>
+                                {order.status}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      
-                      {order.status === 'shipped' && (
-                        <div className="mt-4 bg-blue-50 border border-blue-100 rounded-lg p-4">
-                          <h4 className="text-sm font-semibold text-blue-900 mb-2">Tracking Information</h4>
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div>
-                              <p className="text-sm text-blue-800">
-                                <span className="text-blue-600">Tracking ID:</span> <span className="font-mono font-semibold">TRK-{order.id.split('-')[1]?.toUpperCase() || '123456'}</span>
-                              </p>
-                              <p className="text-xs text-blue-600 mt-1">Estimated delivery: 2-3 business days</p>
+
+                      {expandedOrderId === order.id && (
+                        <div className="bg-white px-6 py-4 border-t border-gray-100">
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2">
+                              <ShoppingBag className="h-4 w-4" />
+                              Order Items
                             </div>
-                            <a 
-                              href={`https://steadfast.com.bd/tracking?id=TRK-${order.id.split('-')[1]?.toUpperCase() || '123456'}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
-                            >
-                              Track Package
-                            </a>
+                            
+                            {loadingItems[order.id] ? (
+                              <div className="flex justify-center py-4">
+                                <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
+                              </div>
+                            ) : orderItems[order.id]?.length > 0 ? (
+                              <div className="space-y-3">
+                                {orderItems[order.id].map((item: any) => (
+                                  <div key={item.id} className="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all">
+                                    <div className="flex items-center gap-3">
+                                      <div className="h-12 w-12 rounded-md bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
+                                        <img 
+                                          src={item.products?.image_url || 'https://via.placeholder.com/150'} 
+                                          alt={item.products?.name}
+                                          className="h-full w-full object-cover"
+                                          referrerPolicy="no-referrer"
+                                        />
+                                      </div>
+                                      <div>
+                                        <p className="text-sm font-medium text-gray-900">{item.products?.name || 'Unknown Product'}</p>
+                                        <p className="text-xs text-gray-500">Qty: {item.quantity} × ৳ {item.price}</p>
+                                      </div>
+                                    </div>
+                                    <p className="text-sm font-semibold text-gray-900">৳ {item.quantity * item.price}</p>
+                                  </div>
+                                ))}
+                                
+                                <div className="pt-3 border-t border-gray-100 mt-4">
+                                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Subtotal</span>
+                                    <span>৳ {order.total_amount}</span>
+                                  </div>
+                                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Shipping</span>
+                                    <span className="text-green-600 font-medium">Free</span>
+                                  </div>
+                                  <div className="flex justify-between text-base font-bold text-gray-900 mt-2">
+                                    <span>Total Amount</span>
+                                    <span>৳ {order.total_amount}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <p className="text-sm text-gray-500 py-2 italic">No items found for this order.</p>
+                            )}
+
+                            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <p className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-1">Shipping Address</p>
+                                <p className="text-xs text-gray-700 leading-relaxed">{order.shipping_address}</p>
+                              </div>
+                              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <p className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-1">Payment Method</p>
+                                <p className="text-xs text-gray-700 capitalize">{order.payment_method.replace('_', ' ')}</p>
+                              </div>
+                            </div>
+
+                            {order.status === 'shipped' && (
+                              <div className="mt-4 bg-blue-50 border border-blue-100 rounded-lg p-4">
+                                <h4 className="text-sm font-semibold text-blue-900 mb-2">Tracking Information</h4>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                  <div>
+                                    <p className="text-sm text-blue-800">
+                                      <span className="text-blue-600">Tracking ID:</span> <span className="font-mono font-semibold">TRK-{order.id.split('-')[1]?.toUpperCase() || '123456'}</span>
+                                    </p>
+                                    <p className="text-xs text-blue-600 mt-1">Estimated delivery: 2-3 business days</p>
+                                  </div>
+                                  <a 
+                                    href={`https://steadfast.com.bd/tracking?id=TRK-${order.id.split('-')[1]?.toUpperCase() || '123456'}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-sm"
+                                  >
+                                    Track Package
+                                  </a>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}
