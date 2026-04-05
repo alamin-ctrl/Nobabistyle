@@ -154,15 +154,24 @@ export function UserDashboard() {
                         </div>
                         <div className="text-left sm:text-right">
                           <p className="font-medium text-gray-900">৳ {order.total_amount}</p>
-                          <span className={`inline-block mt-1 text-xs font-medium rounded-full px-2.5 py-1 ${
-                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                            order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                          </span>
+                          <div className="flex flex-col sm:items-end gap-1 mt-1">
+                            <span className={`inline-block text-[10px] uppercase tracking-wider font-bold rounded-full px-2 py-0.5 ${
+                              order.payment_status === 'paid' ? 'bg-green-100 text-green-700 border border-green-200' :
+                              order.payment_status === 'refunded' ? 'bg-gray-100 text-gray-700 border border-gray-200' :
+                              'bg-red-100 text-red-700 border border-red-200'
+                            }`}>
+                              {order.payment_status || 'Unpaid'}
+                            </span>
+                            <span className={`inline-block text-xs font-medium rounded-full px-2.5 py-1 ${
+                              order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                              order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                              order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                       

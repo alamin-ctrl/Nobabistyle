@@ -9,11 +9,15 @@ create table if not exists public.orders (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users not null,
   status text not null default 'pending' check (status in ('pending', 'processing', 'shipped', 'delivered', 'cancelled')),
+  payment_status text not null default 'unpaid' check (payment_status in ('unpaid', 'paid', 'refunded')),
   total_amount numeric not null,
   shipping_address text not null,
   payment_method text not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
+
+-- Ensure column exists if table was created previously without it
+alter table public.orders add column if not exists payment_status text not null default 'unpaid' check (payment_status in ('unpaid', 'paid', 'refunded'));
 
 create table if not exists public.order_items (
   id uuid default gen_random_uuid() primary key,
@@ -76,6 +80,7 @@ interface Order {
   id: string;
   user_id: string;
   status: string;
+  payment_status: string;
   total_amount: number;
   shipping_address: string;
   payment_method: string;
@@ -144,6 +149,31 @@ export function AdminOrders() {
     }
   };
 
+  const handlePaymentStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      const { error: err } = await supabase
+        .from('orders')
+        .update({ payment_status: newStatus })
+        .eq('id', orderId);
+
+      if (err) throw err;
+
+      // Update local state
+      setOrders(orders.map(o => o.id === orderId ? { ...o, payment_status: newStatus } : o));
+    } catch (err: any) {
+      alert('Failed to update payment status: ' + err.message);
+    }
+  };
+
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid': return 'bg-green-100 text-green-800';
+      case 'unpaid': return 'bg-red-100 text-red-800';
+      case 'refunded': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -192,6 +222,7 @@ export function AdminOrders() {
                   <th className="px-6 py-4 font-medium text-gray-500">Customer</th>
                   <th className="px-6 py-4 font-medium text-gray-500">Date</th>
                   <th className="px-6 py-4 font-medium text-gray-500">Total</th>
+                  <th className="px-6 py-4 font-medium text-gray-500">Payment</th>
                   <th className="px-6 py-4 font-medium text-gray-500">Status</th>
                 </tr>
               </thead>
@@ -210,6 +241,17 @@ export function AdminOrders() {
                     </td>
                     <td className="px-6 py-4 font-medium text-gray-900">
                       ৳ {order.total_amount}
+                    </td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={order.payment_status || 'unpaid'}
+                        onChange={(e) => handlePaymentStatusChange(order.id, e.target.value)}
+                        className={`text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-blue-500 ${getPaymentStatusColor(order.payment_status || 'unpaid')}`}
+                      >
+                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">Paid</option>
+                        <option value="refunded">Refunded</option>
+                      </select>
                     </td>
                     <td className="px-6 py-4">
                       <select

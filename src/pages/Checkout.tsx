@@ -93,7 +93,8 @@ export function Checkout() {
           total_amount: total,
           shipping_address: shippingAddress,
           payment_method: paymentMethod,
-          status: 'pending'
+          status: 'pending',
+          payment_status: 'unpaid'
         })
         .select()
         .single();

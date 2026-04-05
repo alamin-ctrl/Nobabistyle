@@ -135,7 +135,7 @@ export function AdminDashboard() {
       // Fetch Orders & Revenue
       const { data: ordersData } = await supabase
         .from('orders')
-        .select('id, total_amount, status, created_at, user_id')
+        .select('id, total_amount, status, payment_status, created_at, user_id')
         .order('created_at', { ascending: false });
 
       let revenue = 0;
