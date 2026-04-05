@@ -1,9 +1,16 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Loader2, Save, Phone, CreditCard } from 'lucide-react';
 import { SqlSnippetModal } from '../../components/admin/SqlSnippetModal';
 import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+
+interface PaymentSetting {
+  number: string;
+  type: string;
+  is_enabled: boolean;
+  extra_config: any;
+}
 
 const PAYMENT_SQL = `-- Payment Settings Setup
 
@@ -49,11 +56,11 @@ export function AdminPaymentConfig() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [settings, setSettings] = useState<Record<string, any>>({
-    bkash: { number: '', type: 'merchant', is_enabled: true },
-    nagad: { number: '', type: 'merchant', is_enabled: true },
-    rocket: { number: '', type: 'merchant', is_enabled: true },
-    sslcommerz: { is_enabled: false, extra_config: { store_id: '', store_password: '', is_test: true } }
+  const [settings, setSettings] = useState<Record<string, PaymentSetting>>({
+    bkash: { number: '', type: 'merchant', is_enabled: true, extra_config: {} },
+    nagad: { number: '', type: 'merchant', is_enabled: true, extra_config: {} },
+    rocket: { number: '', type: 'merchant', is_enabled: true, extra_config: {} },
+    sslcommerz: { number: '', type: 'auto', is_enabled: false, extra_config: { store_id: '', store_password: '', is_test: true } }
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -72,7 +79,7 @@ export function AdminPaymentConfig() {
 
       if (data) {
         const newSettings = { ...settings };
-        data.forEach(item => {
+        data.forEach((item: any) => {
           if (item.id in newSettings) {
             newSettings[item.id] = {
               number: item.number || '',
@@ -97,16 +104,17 @@ export function AdminPaymentConfig() {
     setMessage(null);
 
     try {
-      const updates = Object.entries(settings).map(([id, config]) => 
-        supabase.from('payment_settings').upsert({ 
+      const updates = Object.entries(settings).map(([id, config]) => {
+        const c = config as PaymentSetting;
+        return supabase.from('payment_settings').upsert({ 
           id, 
-          number: config.number || null, 
-          type: id === 'sslcommerz' ? 'auto' : config.type,
-          is_enabled: config.is_enabled,
-          extra_config: config.extra_config || {},
+          number: c.number || null, 
+          type: id === 'sslcommerz' ? 'auto' : c.type,
+          is_enabled: c.is_enabled,
+          extra_config: c.extra_config || {},
           updated_at: new Date().toISOString() 
-        })
-      );
+        });
+      });
 
       const results = await Promise.all(updates);
       const firstError = results.find(r => r.error)?.error;

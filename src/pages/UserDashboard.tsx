@@ -2,7 +2,7 @@ import { useUserStore } from '../store/useUserStore';
 import { Navigate } from 'react-router-dom';
 import { Package, Download, Settings, User, Save, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
 export function UserDashboard() {

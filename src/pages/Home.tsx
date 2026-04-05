@@ -1,3 +1,4 @@
+import React from 'react';
 import { ProductCard } from '../components/ui/ProductCard';
 import { Button } from '../components/ui/Button';
 import { ArrowRight, Truck, ShieldCheck, Zap, Loader2 } from 'lucide-react';

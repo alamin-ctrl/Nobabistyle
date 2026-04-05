@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Plus, Edit, Trash2, Loader2, X } from 'lucide-react';
 import { SqlSnippetModal } from '../../components/admin/SqlSnippetModal';
 import { Button } from '../../components/ui/Button';

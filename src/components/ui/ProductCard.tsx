@@ -1,10 +1,11 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '../../data/mockData';
 import { ShoppingCart, Star } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useCartStore } from '../../store/useCartStore';
 
-export function ProductCard({ product }: { product: Product }) {
+export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const addItem = useCartStore((state) => state.addItem);
 
   return (

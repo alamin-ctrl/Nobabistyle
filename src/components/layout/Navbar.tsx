@@ -20,7 +20,7 @@ export function Navbar() {
             <div className="flex items-center">
               <Link to="/" className="flex items-center gap-2">
                 <span className="text-2xl font-bold tracking-tight text-gray-900">
-                  BD<span className="text-blue-600">Mart</span>
+                  Nobabi <span className="text-blue-600">Style</span>
                 </span>
               </Link>
             </div>

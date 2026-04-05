@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { supabase, hasSupabaseConfig } from '../lib/supabase';
 import { Loader2 } from 'lucide-react';
+import { useUserStore } from '../store/useUserStore';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -22,7 +23,15 @@ export function Login() {
     setLoading(true);
 
     if (!hasSupabaseConfig || !supabase) {
-      setError("Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to the AI Studio Secrets panel.");
+      // Mock login for preview environment when Supabase is not configured
+      const isAdmin = email === 'alaminid6@gmail.com' || email === 'admin@nobabistyle.com';
+      useUserStore.getState().login({
+        id: 'mock-id-123',
+        name: email.split('@')[0],
+        email: email,
+        role: isAdmin ? 'admin' : 'user'
+      });
+      navigate(isAdmin ? '/admin' : '/dashboard');
       setLoading(false);
       return;
     }

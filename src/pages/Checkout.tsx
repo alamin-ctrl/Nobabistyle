@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useUserStore } from '../store/useUserStore';
@@ -198,7 +198,7 @@ export function Checkout() {
                     <span className="ml-3 font-medium">Cash on Delivery (COD)</span>
                   </label>
 
-                  {Object.entries(paymentSettings).map(([id, config]) => (
+                  {Object.entries(paymentSettings).map(([id, config]: [string, any]) => (
                     <label key={id} className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
                       paymentMethod === id 
                         ? id === 'bkash' ? 'border-pink-600 bg-pink-50' 

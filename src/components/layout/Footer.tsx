@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold text-white mb-4">
-              BD<span className="text-blue-500">Mart</span>
+              Nobabi <span className="text-blue-500">Style</span>
             </h3>
             <p className="text-sm text-gray-400 mb-4">
               Your one-stop destination for physical and digital products in Bangladesh. Quality products, fast delivery.
@@ -42,7 +42,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-12 pt-8 text-sm text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} BDMart. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Nobabi Style. All rights reserved.</p>
         </div>
       </div>
     </footer>

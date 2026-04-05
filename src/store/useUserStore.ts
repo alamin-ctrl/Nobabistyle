@@ -38,24 +38,27 @@ export const useUserStore = create<UserStore>((set) => ({
 
           if (error) throw error;
 
+          const isAdmin = email === 'alaminid6@gmail.com' || email === 'admin@nobabistyle.com' || profile?.role === 'admin';
+
           set({
             user: {
               id: userId,
               name: metadata?.full_name || email?.split('@')[0] || 'User',
               email: email || '',
-              role: profile?.role || 'user',
+              role: isAdmin ? 'admin' : 'user',
             },
             isAuthenticated: true,
           });
         } catch (err) {
           console.error('Error fetching user profile:', err);
           // Fallback to basic user info if profile fetch fails
+          const isAdmin = email === 'alaminid6@gmail.com' || email === 'admin@nobabistyle.com';
           set({
             user: {
               id: userId,
               name: metadata?.full_name || email?.split('@')[0] || 'User',
               email: email || '',
-              role: 'user',
+              role: isAdmin ? 'admin' : 'user',
             },
             isAuthenticated: true,
           });

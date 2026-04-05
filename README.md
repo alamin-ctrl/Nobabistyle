@@ -1,4 +1,4 @@
-# BDMart - Bangladesh eCommerce Platform
+# Nobabi Style - Bangladesh eCommerce Platform
 
 This is a modern eCommerce website built for the Bangladesh market, supporting both physical and digital products.
 
@@ -45,7 +45,7 @@ To run this project locally:
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd bdmart
+   cd nobabistyle
    ```
 
 2. **Install dependencies**
