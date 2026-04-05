@@ -67,7 +67,7 @@ export function UserDashboard() {
           *,
           products (
             name,
-            image_url
+            images
           )
         `)
         .eq('order_id', orderId);
@@ -240,7 +240,7 @@ export function UserDashboard() {
                                     <div className="flex items-center gap-3">
                                       <div className="h-12 w-12 rounded-md bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
                                         <img 
-                                          src={item.products?.image_url || 'https://via.placeholder.com/150'} 
+                                          src={item.products?.images?.[0] || 'https://via.placeholder.com/150'} 
                                           alt={item.products?.name}
                                           className="h-full w-full object-cover"
                                           referrerPolicy="no-referrer"
