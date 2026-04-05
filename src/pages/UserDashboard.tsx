@@ -11,12 +11,42 @@ export function UserDashboard() {
   const [fullName, setFullName] = useState(user?.name || '');
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.name) {
       setFullName(user.name);
     }
   }, [user]);
+
+  const fetchOrders = async (userId: string) => {
+    try {
+      setLoadingOrders(true);
+      setOrdersError(null);
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setOrders(data || []);
+    } catch (error: any) {
+      console.error('Error fetching orders:', error);
+      setOrdersError(error.message || 'Failed to load orders');
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id && activeTab === 'orders') {
+      fetchOrders(user.id);
+    }
+  }, [user?.id, activeTab]);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
@@ -92,14 +122,81 @@ export function UserDashboard() {
         <div className="md:col-span-2">
           {activeTab === 'orders' ? (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+              <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-gray-900">Order History</h2>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => user?.id && fetchOrders(user.id)}
+                  disabled={loadingOrders}
+                >
+                  Refresh
+                </Button>
               </div>
-              <div className="p-6 text-center text-gray-500">
-                <Package className="h-12 w-12 mx-auto text-gray-300 mb-3" />
-                <p>You haven't placed any orders yet.</p>
-                <Button className="mt-4">Start Shopping</Button>
-              </div>
+              
+              {loadingOrders ? (
+                <div className="p-12 flex justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                </div>
+              ) : ordersError ? (
+                <div className="p-6 text-center text-red-500">
+                  <p>Error: {ordersError}</p>
+                  <Button onClick={fetchOrders} variant="outline" className="mt-4">Try Again</Button>
+                </div>
+              ) : orders.length > 0 ? (
+                <div className="divide-y divide-gray-200">
+                  {orders.map((order) => (
+                    <div key={order.id} className="p-6 hover:bg-gray-50 transition-colors">
+                      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
+                        <div>
+                          <p className="text-sm text-gray-500">Order ID: <span className="font-mono text-gray-900">{order.id.split('-')[0]}</span></p>
+                          <p className="text-sm text-gray-500">Date: <span className="text-gray-900">{new Date(order.created_at).toLocaleDateString()}</span></p>
+                        </div>
+                        <div className="text-left sm:text-right">
+                          <p className="font-medium text-gray-900">৳ {order.total_amount}</p>
+                          <span className={`inline-block mt-1 text-xs font-medium rounded-full px-2.5 py-1 ${
+                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                            order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {order.status === 'shipped' && (
+                        <div className="mt-4 bg-blue-50 border border-blue-100 rounded-lg p-4">
+                          <h4 className="text-sm font-semibold text-blue-900 mb-2">Tracking Information</h4>
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                              <p className="text-sm text-blue-800">
+                                <span className="text-blue-600">Tracking ID:</span> <span className="font-mono font-semibold">TRK-{order.id.split('-')[1]?.toUpperCase() || '123456'}</span>
+                              </p>
+                              <p className="text-xs text-blue-600 mt-1">Estimated delivery: 2-3 business days</p>
+                            </div>
+                            <a 
+                              href={`https://steadfast.com.bd/tracking?id=TRK-${order.id.split('-')[1]?.toUpperCase() || '123456'}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                            >
+                              Track Package
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-6 text-center text-gray-500">
+                  <Package className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+                  <p>You haven't placed any orders yet.</p>
+                  <Button className="mt-4">Start Shopping</Button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">

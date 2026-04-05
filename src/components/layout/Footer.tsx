@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Facebook } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -12,6 +13,11 @@ export function Footer() {
             <p className="text-sm text-gray-400 mb-4">
               Your one-stop destination for physical and digital products in Bangladesh. Quality products, fast delivery.
             </p>
+            <div className="flex space-x-4">
+              <a href="https://www.facebook.com/nobabistyle" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors">
+                <Facebook className="h-5 w-5" />
+              </a>
+            </div>
           </div>
           <div>
             <h4 className="text-white font-semibold mb-4">Shop</h4>
