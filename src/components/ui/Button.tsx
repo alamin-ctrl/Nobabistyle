@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { cn } from '../../lib/utils';
+import { motion } from 'motion/react';
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,8 +11,9 @@ export interface ButtonProps
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'default', size = 'default', ...props }, ref) => {
     return (
-      <button
-        ref={ref}
+      <motion.button
+        ref={ref as any}
+        whileTap={{ scale: 0.95 }}
         className={cn(
           'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
           {
@@ -26,7 +28,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           },
           className
         )}
-        {...props}
+        {...(props as any)}
       />
     );
   }

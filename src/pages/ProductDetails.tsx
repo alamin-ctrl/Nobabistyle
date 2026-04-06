@@ -4,6 +4,7 @@ import { useCartStore } from '../store/useCartStore';
 import { Star, Truck, Shield, ArrowLeft, Plus, Minus, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useProduct } from '../hooks/useProducts';
+import { motion } from 'motion/react';
 
 export function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -48,7 +49,13 @@ export function ProductDetails() {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 sm:px-6 lg:px-8 py-12"
+    >
       <button 
         onClick={() => navigate(-1)} 
         className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-8 transition-colors"
@@ -58,16 +65,26 @@ export function ProductDetails() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
         {/* Product Image */}
-        <div className="aspect-square overflow-hidden rounded-2xl bg-gray-100 border border-gray-200">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="aspect-square overflow-hidden rounded-2xl bg-gray-100 border border-gray-200"
+        >
           <img 
             src={product.images[0]} 
             alt={product.name} 
             className="w-full h-full object-cover object-center"
           />
-        </div>
+        </motion.div>
 
         {/* Product Info */}
-        <div className="flex flex-col">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="flex flex-col"
+        >
           <div className="mb-6">
             <p className="text-sm font-medium text-blue-600 mb-2">{product.category}</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{product.name}</h1>
@@ -149,8 +166,8 @@ export function ProductDetails() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

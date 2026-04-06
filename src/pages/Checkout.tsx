@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'motion/react';
 
 type PaymentMethod = 'cod' | 'bkash' | 'nagad' | 'rocket';
 
@@ -152,7 +153,13 @@ export function Checkout() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-gray-50 min-h-screen py-12"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
         
@@ -312,6 +319,6 @@ export function Checkout() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

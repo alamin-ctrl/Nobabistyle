@@ -4,6 +4,7 @@ import { Package, Download, Settings, User, Save, Loader2, ChevronDown, ChevronU
 import { Button } from '../components/ui/Button';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'motion/react';
 
 export function UserDashboard() {
   const { user, isAuthenticated, logout } = useUserStore();
@@ -120,7 +121,13 @@ export function UserDashboard() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-5xl">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 py-12 max-w-5xl"
+    >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Account</h1>
@@ -396,6 +403,6 @@ export function UserDashboard() {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
