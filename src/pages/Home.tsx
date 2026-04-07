@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ProductCard } from '../components/ui/ProductCard';
 import { Button } from '../components/ui/Button';
 import { ArrowRight, Truck, ShieldCheck, Zap, Loader2, MapPin, Clock, Store } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import { motion } from 'motion/react';
+import { supabase } from '../lib/supabase';
 
 export function Home() {
   const { category } = useParams<{ category: string }>();
   const { products: displayedProducts, loading, error } = useProducts(category);
+  const [outletImages, setOutletImages] = useState<any[]>([]);
+  const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    const fetchOutletImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('outlet_images')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (!error && data) {
+          setOutletImages(data);
+        }
+      } catch (err) {
+        console.error('Error fetching outlet images:', err);
+      }
+    };
+
+    fetchOutletImages();
+  }, []);
 
   const featuredProducts = displayedProducts.slice(0, 4);
   const digitalProducts = displayedProducts.filter(p => p.isDigital).slice(0, 4);
@@ -230,13 +252,42 @@ export function Home() {
                 transition={{ duration: 1 }}
                 className="lg:w-1/2 relative"
               >
-                <div className="aspect-[4/5] overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000" 
-                    alt="Nobabi Style Store" 
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
-                  />
-                </div>
+                {outletImages.length > 0 ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="aspect-[4/5] overflow-hidden">
+                      <motion.img 
+                        key={activeImage}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        src={outletImages[activeImage].url} 
+                        alt="Nobabi Style Store" 
+                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                      />
+                    </div>
+                    {outletImages.length > 1 && (
+                      <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+                        {outletImages.map((img, idx) => (
+                          <button
+                            key={img.id}
+                            onClick={() => setActiveImage(idx)}
+                            className={`relative w-20 h-24 flex-shrink-0 overflow-hidden border-2 transition-all duration-300 ${activeImage === idx ? 'border-gold-500' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                          >
+                            <img src={img.url} alt="Store thumbnail" className="w-full h-full object-cover" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000" 
+                      alt="Nobabi Style Store" 
+                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                    />
+                  </div>
+                )}
                 <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-gold-50 -z-10"></div>
                 <div className="absolute top-10 -left-10 w-32 h-32 border-l border-t border-gold-400 -z-10"></div>
               </motion.div>

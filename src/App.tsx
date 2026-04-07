@@ -15,6 +15,7 @@ import { AdminUsers } from './pages/admin/AdminUsers';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminPaymentConfig } from './pages/admin/AdminPaymentConfig';
+import { AdminOutlet } from './pages/admin/AdminOutlet';
 import { UserDashboard } from './pages/UserDashboard';
 import { useUserStore } from './store/useUserStore';
 import { AnimatePresence } from 'motion/react';
@@ -40,6 +41,7 @@ function AnimatedRoutes() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="payment-config" element={<AdminPaymentConfig />} />
+          <Route path="outlet" element={<AdminOutlet />} />
         </Route>
 
         <Route path="/dashboard" element={<UserDashboard />} />

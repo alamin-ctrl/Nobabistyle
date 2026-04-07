@@ -1,6 +1,6 @@
 import { Outlet, Navigate, NavLink, useLocation, Link } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
-import { LayoutDashboard, Users, Package, ShoppingCart, Settings, CreditCard, Menu, X, BarChart3, FileText, LogOut, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ShoppingCart, Settings, CreditCard, Menu, X, BarChart3, FileText, LogOut, ShieldCheck, Store } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { motion, AnimatePresence } from 'motion/react';
@@ -28,6 +28,7 @@ export function AdminLayout() {
     { name: 'Inventory', path: '/admin/products', icon: Package },
     { name: 'Orders', path: '/admin/orders', icon: ShoppingCart },
     { name: 'Payments', path: '/admin/payment-config', icon: CreditCard },
+    { name: 'Offline Outlet', path: '/admin/outlet', icon: Store },
   ];
 
   const renderNavItems = (isMobile: boolean) => {

@@ -66,15 +66,24 @@ export const useUserStore = create<UserStore>((set) => ({
       };
 
       // Get initial session
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session?.user) {
+      supabase.auth.getSession().then(({ data: { session }, error }) => {
+        if (error) {
+          console.warn('Supabase session error:', error.message);
+          if (error.message.includes('Refresh Token')) {
+            supabase.auth.signOut().catch(console.error);
+          }
+        } else if (session?.user) {
           fetchProfile(session.user.id, session.user.email || '', session.user.user_metadata);
         }
+      }).catch(err => {
+        console.warn('Error getting session:', err);
       });
 
       // Listen for auth changes
       supabase.auth.onAuthStateChange((event, session) => {
-        if (session?.user) {
+        if (event === 'SIGNED_OUT') {
+          set({ user: null, isAuthenticated: false });
+        } else if (session?.user) {
           fetchProfile(session.user.id, session.user.email || '', session.user.user_metadata);
         } else {
           set({ user: null, isAuthenticated: false });
