@@ -15,16 +15,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref as any}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+          'inline-flex items-center justify-center whitespace-nowrap rounded-full text-xs font-bold uppercase tracking-[0.15em] ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95',
           {
-            'bg-gray-900 text-white hover:bg-gray-900/90': variant === 'default',
-            'border border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-900': variant === 'outline',
-            'hover:bg-gray-100 hover:text-gray-900': variant === 'ghost',
-            'text-gray-900 underline-offset-4 hover:underline': variant === 'link',
-            'h-10 px-4 py-2': size === 'default',
-            'h-9 rounded-md px-3': size === 'sm',
-            'h-11 rounded-md px-8': size === 'lg',
-            'h-10 w-10': size === 'icon',
+            'bg-black text-white hover:bg-gold-600 hover:text-white shadow-lg hover:shadow-gold-500/20': variant === 'default',
+            'border border-gray-200 bg-white text-gray-900 hover:border-gold-500 hover:text-gold-600': variant === 'outline',
+            'hover:bg-gold-50 hover:text-gold-700': variant === 'ghost',
+            'text-gray-900 underline-offset-8 hover:underline hover:text-gold-600': variant === 'link',
+            'h-12 px-8': size === 'default',
+            'h-10 px-6': size === 'sm',
+            'h-14 px-10 text-sm': size === 'lg',
+            'h-10 w-10 p-0': size === 'icon',
           },
           className
         )}

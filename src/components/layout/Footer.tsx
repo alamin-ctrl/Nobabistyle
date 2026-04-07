@@ -1,54 +1,96 @@
 import { Link } from 'react-router-dom';
-import { Facebook } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Mail, ArrowRight } from 'lucide-react';
+import { Button } from '../ui/Button';
 
 export function Footer() {
   return (
-    <footer className="bg-black text-gray-400 border-t border-gray-900">
-      <div className="container mx-auto px-4 py-10 sm:py-16 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-          <div>
-            <h3 className="text-2xl font-bold text-white mb-6 font-serif">
-              Nobabi <span className="text-gold-400">Style</span>
-            </h3>
-            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-              Your one-stop destination for physical and digital products in Bangladesh. Quality products, fast delivery.
+    <footer className="bg-black text-white pt-24 pb-12 border-t border-white/5">
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-24">
+          {/* Brand Section */}
+          <div className="lg:col-span-4 space-y-8">
+            <Link to="/" className="inline-block">
+              <h3 className="text-3xl font-serif tracking-tighter text-white">
+                Nobabi <span className="text-gold-500 italic">Style</span>
+              </h3>
+            </Link>
+            <p className="text-sm text-gray-400 leading-relaxed max-w-sm font-light">
+              Redefining luxury through a blend of heritage and modern aesthetics. Our atelier brings you the finest selections in fashion and digital craftsmanship.
             </p>
-            <div className="flex space-x-4">
-              <a href="https://www.facebook.com/nobabistyle" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-gold-500 hover:text-black transition-all duration-300">
+            <div className="flex items-center gap-6">
+              <a href="#" className="text-gray-500 hover:text-gold-500 transition-colors">
                 <Facebook className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-gray-500 hover:text-gold-500 transition-colors">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-gray-500 hover:text-gold-500 transition-colors">
+                <Twitter className="h-5 w-5" />
               </a>
             </div>
           </div>
-          <div>
-            <h4 className="text-white font-semibold mb-6 tracking-wider uppercase text-sm">Shop</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/category/Men" className="hover:text-gold-400 transition-colors">Men's Fashion</Link></li>
-              <li><Link to="/category/Women" className="hover:text-gold-400 transition-colors">Women's Fashion</Link></li>
-              <li><Link to="/category/Kids" className="hover:text-gold-400 transition-colors">Kids Collection</Link></li>
-              <li><Link to="/category/Digital" className="hover:text-gold-400 transition-colors">Digital Products</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-6 tracking-wider uppercase text-sm">Support</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="#" className="hover:text-gold-400 transition-colors">Contact Us</Link></li>
-              <li><Link to="#" className="hover:text-gold-400 transition-colors">FAQs</Link></li>
-              <li><Link to="#" className="hover:text-gold-400 transition-colors">Shipping Policy</Link></li>
-              <li><Link to="#" className="hover:text-gold-400 transition-colors">Return Policy</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-6 tracking-wider uppercase text-sm">Payment Methods</h4>
-            <div className="flex gap-3 mb-4">
-              <div className="h-10 w-14 bg-gray-900 rounded-md flex items-center justify-center text-xs font-bold text-pink-500 border border-gray-800">bKash</div>
-              <div className="h-10 w-14 bg-gray-900 rounded-md flex items-center justify-center text-xs font-bold text-orange-500 border border-gray-800">Nagad</div>
-              <div className="h-10 w-14 bg-gray-900 rounded-md flex items-center justify-center text-xs font-bold text-purple-500 border border-gray-800">Rocket</div>
+
+          {/* Links Sections */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-bold tracking-[0.4em] uppercase text-gold-500">Collections</h4>
+              <ul className="space-y-4">
+                <li><Link to="/category/Men" className="text-sm text-gray-400 hover:text-white transition-colors font-light">Men's Atelier</Link></li>
+                <li><Link to="/category/Women" className="text-sm text-gray-400 hover:text-white transition-colors font-light">Women's Atelier</Link></li>
+                <li><Link to="/category/Kids" className="text-sm text-gray-400 hover:text-white transition-colors font-light">The Petite Line</Link></li>
+                <li><Link to="/category/Digital" className="text-sm text-gray-400 hover:text-white transition-colors font-light">Digital Assets</Link></li>
+              </ul>
             </div>
-            <p className="text-xs text-gray-500">Cash on Delivery also available.</p>
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-bold tracking-[0.4em] uppercase text-gold-500">The House</h4>
+              <ul className="space-y-4">
+                <li><Link to="#" className="text-sm text-gray-400 hover:text-white transition-colors font-light">Our Story</Link></li>
+                <li><Link to="#" className="text-sm text-gray-400 hover:text-white transition-colors font-light">Atelier Services</Link></li>
+                <li><Link to="#" className="text-sm text-gray-400 hover:text-white transition-colors font-light">Sustainability</Link></li>
+                <li><Link to="#" className="text-sm text-gray-400 hover:text-white transition-colors font-light">Contact</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Newsletter Section */}
+          <div className="lg:col-span-4 space-y-8">
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-bold tracking-[0.4em] uppercase text-gold-500">Newsletter</h4>
+              <p className="text-sm text-gray-400 font-light">Subscribe to receive updates on new collections and exclusive events.</p>
+            </div>
+            <form className="relative group">
+              <input 
+                type="email" 
+                placeholder="EMAIL ADDRESS" 
+                className="w-full bg-transparent border-b border-white/20 py-4 text-xs tracking-widest focus:outline-none focus:border-gold-500 transition-colors uppercase placeholder:text-gray-600"
+              />
+              <button className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-gray-400 group-hover:text-gold-500 transition-colors">
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
+            <div className="flex items-center gap-4 pt-4">
+              <div className="h-px flex-1 bg-white/5" />
+              <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Secure Payments</p>
+              <div className="h-px flex-1 bg-white/5" />
+            </div>
+            <div className="flex justify-center gap-6 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+              <span className="text-[10px] font-bold tracking-tighter">BKASH</span>
+              <span className="text-[10px] font-bold tracking-tighter">NAGAD</span>
+              <span className="text-[10px] font-bold tracking-tighter">ROCKET</span>
+              <span className="text-[10px] font-bold tracking-tighter">VISA</span>
+            </div>
           </div>
         </div>
-        <div className="border-t border-gray-900 mt-16 pt-8 text-sm text-center text-gray-600">
-          <p>&copy; {new Date().getFullYear()} Nobabi Style. All rights reserved.</p>
+
+        <div className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/5 gap-6">
+          <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">
+            &copy; {new Date().getFullYear()} Nobabi Style Atelier. All rights reserved.
+          </p>
+          <div className="flex gap-8">
+            <Link to="#" className="text-[10px] text-gray-600 uppercase tracking-widest font-bold hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="#" className="text-[10px] text-gray-600 uppercase tracking-widest font-bold hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="#" className="text-[10px] text-gray-600 uppercase tracking-widest font-bold hover:text-white transition-colors">Cookie Policy</Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { supabase, hasSupabaseConfig } from '../lib/supabase';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowRight, Mail, Lock, ShieldCheck } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -24,7 +24,6 @@ export function Login() {
     setLoading(true);
 
     if (!hasSupabaseConfig || !supabase) {
-      // Mock login for preview environment when Supabase is not configured
       const isAdmin = email === 'alaminid6@gmail.com' || email === 'admin@nobabistyle.com';
       useUserStore.getState().login({
         id: 'mock-id-123',
@@ -66,82 +65,167 @@ export function Login() {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-[80vh] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
-    >
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isSignUp ? 'Create an account' : 'Sign in to your account'}
-          </h2>
-          {!hasSupabaseConfig && (
-            <p className="mt-4 text-center text-sm text-red-600 bg-red-50 p-3 rounded-md border border-red-200">
-              <strong>Missing Supabase Config:</strong> You must add <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> to the AI Studio Secrets panel to use authentication.
-            </p>
-          )}
+    <div className="min-h-screen flex">
+      {/* Left Side - Visual */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-black overflow-hidden">
+        <motion.div 
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.6 }}
+          transition={{ duration: 2 }}
+          className="absolute inset-0"
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" 
+            alt="Luxury Fashion" 
+            className="h-full w-full object-cover"
+          />
+        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+        <div className="relative z-10 flex flex-col justify-end p-24 space-y-6">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-5xl font-serif tracking-tighter text-white leading-tight"
+          >
+            Welcome to the <br />
+            <span className="italic text-gold-500">Nobabi Atelier</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="text-sm text-gray-400 font-light tracking-widest uppercase max-w-md"
+          >
+            Experience the pinnacle of fashion and digital craftsmanship.
+          </motion.p>
         </div>
-        
-        {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200">
-            {error}
-          </div>
-        )}
-
-        {successMsg && (
-          <div className="bg-green-50 text-green-700 p-3 rounded-md text-sm border border-green-200">
-            {successMsg}
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
-              <Input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <Input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                minLength={6}
-              />
-            </div>
-          </div>
-
-          <Button type="submit" className="w-full h-11" disabled={loading}>
-            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (isSignUp ? 'Sign up' : 'Sign in')}
-          </Button>
-          
-          <div className="text-center mt-4">
-            <button 
-              type="button" 
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setError(null);
-                setSuccessMsg(null);
-              }}
-              className="text-sm text-blue-600 hover:underline"
-            >
-              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
-            </button>
-          </div>
-        </form>
       </div>
-    </motion.div>
+
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-md w-full space-y-12"
+        >
+          <div className="space-y-4">
+            <Link to="/" className="inline-block">
+              <h1 className="text-2xl font-serif tracking-tighter text-gray-900">
+                Nobabi <span className="italic text-gold-600">Style</span>
+              </h1>
+            </Link>
+            <div className="space-y-2">
+              <h2 className="text-3xl font-serif tracking-tight text-gray-900">
+                {isSignUp ? 'Create an account' : 'Sign in to your account'}
+              </h2>
+              <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase font-bold">
+                {isSignUp ? 'Join our exclusive community' : 'Access your personal atelier'}
+              </p>
+            </div>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="p-4 bg-red-50 text-[10px] font-bold tracking-widest text-red-600 uppercase border border-red-100"
+              >
+                {error}
+              </motion.div>
+            )}
+            {successMsg && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="p-4 bg-green-50 text-[10px] font-bold tracking-widest text-green-700 uppercase border border-green-100"
+              >
+                {successMsg}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <form className="space-y-8" onSubmit={handleSubmit}>
+            <div className="space-y-6">
+              <div className="space-y-2 group">
+                <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 group-focus-within:text-gold-600 transition-colors">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300 group-focus-within:text-gold-500 transition-colors" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-transparent border-b border-gray-100 py-4 pl-8 text-sm tracking-widest text-gray-900 focus:outline-none focus:border-gold-500 transition-all uppercase font-light placeholder:text-gray-300"
+                    placeholder="YOU@EXAMPLE.COM"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2 group">
+                <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 group-focus-within:text-gold-600 transition-colors">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300 group-focus-within:text-gold-500 transition-colors" />
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-transparent border-b border-gray-100 py-4 pl-8 text-sm tracking-widest text-gray-900 focus:outline-none focus:border-gold-500 transition-all uppercase font-light placeholder:text-gray-300"
+                    placeholder="••••••••"
+                    minLength={6}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <Button 
+                type="submit" 
+                className="w-full h-14 rounded-none flex items-center justify-center gap-3 group" 
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <>
+                    {isSignUp ? 'Create Account' : 'Sign In'}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
+              </Button>
+              
+              <div className="text-center">
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setIsSignUp(!isSignUp);
+                    setError(null);
+                    setSuccessMsg(null);
+                  }}
+                  className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 hover:text-gold-600 transition-colors"
+                >
+                  {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Create one"}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div className="pt-12 border-t border-gray-50 flex items-center justify-center gap-4">
+            <ShieldCheck className="h-4 w-4 text-gray-300" />
+            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Secure Authentication</p>
+          </div>
+        </motion.div>
+      </div>
+    </div>
   );
 }
 

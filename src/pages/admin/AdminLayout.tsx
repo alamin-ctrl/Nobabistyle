@@ -1,8 +1,9 @@
-import { Outlet, Navigate, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, Navigate, NavLink, useLocation, Link } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
-import { LayoutDashboard, Users, Package, ShoppingCart, Settings, CreditCard, Menu, X, BarChart3, FileText } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ShoppingCart, Settings, CreditCard, Menu, X, BarChart3, FileText, LogOut, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/ui/Button';
+import { motion, AnimatePresence } from 'motion/react';
 
 type NavItem = {
   name: string;
@@ -11,7 +12,7 @@ type NavItem = {
 };
 
 export function AdminLayout() {
-  const { user, isAuthenticated } = useUserStore();
+  const { user, isAuthenticated, logout } = useUserStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -20,13 +21,13 @@ export function AdminLayout() {
   }
 
   const navItems: NavItem[] = [
-    { name: 'Dashboard Overview', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
     { name: 'Reports', path: '/admin/reports', icon: FileText },
-    { name: 'Users & Roles', path: '/admin/users', icon: Users },
-    { name: 'Products', path: '/admin/products', icon: Package },
+    { name: 'Users', path: '/admin/users', icon: Users },
+    { name: 'Inventory', path: '/admin/products', icon: Package },
     { name: 'Orders', path: '/admin/orders', icon: ShoppingCart },
-    { name: 'Payment Config', path: '/admin/payment-config', icon: CreditCard },
+    { name: 'Payments', path: '/admin/payment-config', icon: CreditCard },
   ];
 
   const renderNavItems = (isMobile: boolean) => {
@@ -36,59 +37,110 @@ export function AdminLayout() {
         to={item.path}
         onClick={() => isMobile && setIsMobileMenuOpen(false)}
         className={({ isActive }) =>
-          `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          `flex items-center gap-4 px-6 py-4 text-[10px] font-bold tracking-[0.3em] uppercase transition-all duration-300 border-l-2 ${
             isActive
-              ? 'bg-blue-50 text-blue-700'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+              ? 'border-gold-500 text-gray-900 bg-gold-50/30'
+              : 'border-transparent text-gray-400 hover:text-gray-600 hover:bg-gray-50'
           }`
         }
       >
-        <item.icon className="h-5 w-5" />
+        <item.icon className={`h-4 w-4 ${location.pathname === item.path ? 'text-gold-600' : ''}`} />
         {item.name}
       </NavLink>
     ));
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] bg-gray-50 flex-col md:flex-row">
+    <div className="flex min-h-screen bg-white">
       {/* Mobile Header */}
-      <div className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-16 z-30">
-        <h2 className="text-lg font-bold text-gray-900">Admin Panel</h2>
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-100 px-6 flex items-center justify-between z-50">
+        <Link to="/" className="text-lg font-serif tracking-tighter">
+          Nobabi <span className="italic text-gold-600">Admin</span>
+        </Link>
         <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
       </div>
 
       {/* Mobile Navigation Overlay */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setIsMobileMenuOpen(false)}>
-          <div className="w-64 h-full bg-white p-4 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900">Admin Panel</h2>
-              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
-            <nav className="space-y-1">
-              {renderNavItems(true)}
-            </nav>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="md:hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <motion.div 
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="w-80 h-full bg-white shadow-2xl flex flex-col" 
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-8 flex items-center justify-between border-b border-gray-50">
+                <h2 className="text-xl font-serif tracking-tighter">Nobabi <span className="italic text-gold-600">Admin</span></h2>
+                <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              <nav className="flex-1 py-8">
+                {renderNavItems(true)}
+              </nav>
+              <div className="p-8 border-t border-gray-50">
+                <button 
+                  onClick={logout}
+                  className="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Sidebar (Desktop) */}
-      <aside className="w-64 bg-white border-r border-gray-200 hidden md:block overflow-y-auto">
-        <div className="p-6">
-          <h2 className="text-lg font-bold text-gray-900">Admin Panel</h2>
+      <aside className="w-72 bg-white border-r border-gray-100 hidden md:flex flex-col sticky top-0 h-screen">
+        <div className="p-10">
+          <Link to="/" className="text-2xl font-serif tracking-tighter block">
+            Nobabi <span className="italic text-gold-600">Admin</span>
+          </Link>
+          <p className="text-[9px] tracking-[0.4em] text-gray-400 uppercase font-bold mt-2">Management Suite</p>
         </div>
-        <nav className="px-4 space-y-1 pb-6">
+        
+        <nav className="flex-1 py-4">
           {renderNavItems(false)}
         </nav>
+
+        <div className="p-10 space-y-8">
+          <div className="bg-black p-6 space-y-4">
+            <div className="flex items-center gap-2 text-gold-500">
+              <ShieldCheck className="h-4 w-4" />
+              <span className="text-[10px] font-bold tracking-widest uppercase">Root Access</span>
+            </div>
+            <p className="text-[10px] text-gray-400 font-light leading-relaxed">
+              Logged in as <br />
+              <span className="text-white font-bold">{user?.email}</span>
+            </p>
+          </div>
+          
+          <button 
+            onClick={logout}
+            className="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 hover:text-red-500 transition-colors group"
+          >
+            <LogOut className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            Sign Out
+          </button>
+        </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-4 md:p-8">
+      <main className="flex-1 min-w-0 bg-[#FAFAFA]">
+        <div className="p-8 md:p-16 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>

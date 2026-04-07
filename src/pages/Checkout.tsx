@@ -4,7 +4,7 @@ import { useCartStore } from '../store/useCartStore';
 import { useUserStore } from '../store/useUserStore';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Loader2, Shield } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { motion } from 'motion/react';
 
@@ -157,164 +157,184 @@ export function Checkout() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-gray-50 min-h-screen py-12"
+      transition={{ duration: 0.8 }}
+      className="bg-white min-h-screen py-12 lg:py-20"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="flex flex-col md:flex-row items-baseline justify-between mb-16 gap-4">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 font-serif mb-2">Checkout</h1>
+            <p className="text-gray-500 text-sm tracking-widest uppercase font-bold">Secure your selection</p>
+          </div>
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gold-600">
+            <Shield className="h-4 w-4" /> 100% Secure Transaction
+          </div>
+        </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+          <div className="lg:col-span-7 space-y-16">
             {!isAuthenticated && (
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-semibold mb-2">Contact Information</h2>
-                <p className="text-sm text-gray-500 mb-4">Already have an account? <button onClick={() => navigate('/login')} className="text-blue-600 hover:underline">Log in</button></p>
-                <div className="space-y-4">
+              <section>
+                <h2 className="text-[10px] font-bold tracking-[0.4em] text-gold-600 uppercase mb-8">Contact Information</h2>
+                <div className="space-y-6">
+                  <p className="text-sm text-gray-500">Already have an account? <button onClick={() => navigate('/login')} className="text-black font-bold hover:text-gold-600 transition-colors">Log in</button></p>
                   <Input placeholder="Email or mobile phone number" required />
                 </div>
-              </div>
+              </section>
             )}
 
-            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-6">
+            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-16">
               {error && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200 flex items-center gap-3">
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-50 text-red-600 p-6 border border-red-100 flex items-center gap-4"
+                >
                   <AlertCircle className="h-5 w-5" />
-                  <p>{error}</p>
-                </div>
+                  <p className="text-sm font-medium">{error}</p>
+                </motion.div>
               )}
 
               {items.some(item => !item.isDigital) && (
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <h2 className="text-lg font-semibold mb-4">Shipping Address</h2>
-                  <div className="grid grid-cols-2 gap-4">
+                <section>
+                  <h2 className="text-[10px] font-bold tracking-[0.4em] text-gold-600 uppercase mb-8">Shipping Address</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
                     <Input name="firstName" placeholder="First name" required value={formData.firstName} onChange={handleInputChange} />
                     <Input name="lastName" placeholder="Last name" required value={formData.lastName} onChange={handleInputChange} />
-                    <Input name="address" placeholder="Address" className="col-span-2" required value={formData.address} onChange={handleInputChange} />
-                    <Input name="apartment" placeholder="Apartment, suite, etc. (optional)" className="col-span-2" value={formData.apartment} onChange={handleInputChange} />
+                    <Input name="address" placeholder="Address" className="sm:col-span-2" required value={formData.address} onChange={handleInputChange} />
+                    <Input name="apartment" placeholder="Apartment, suite, etc. (optional)" className="sm:col-span-2" value={formData.apartment} onChange={handleInputChange} />
                     <Input name="city" placeholder="City" required value={formData.city} onChange={handleInputChange} />
                     <Input name="postalCode" placeholder="Postal code" required value={formData.postalCode} onChange={handleInputChange} />
-                    <Input name="phone" placeholder="Phone" className="col-span-2" required value={formData.phone} onChange={handleInputChange} />
+                    <Input name="phone" placeholder="Phone" className="sm:col-span-2" required value={formData.phone} onChange={handleInputChange} />
                   </div>
-                </div>
+                </section>
               )}
 
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-semibold mb-4">Payment Method</h2>
-                <div className="space-y-3">
-                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'cod' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}>
-                    <input type="radio" name="payment" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="h-4 w-4 text-blue-600" />
-                    <span className="ml-3 font-medium">Cash on Delivery (COD)</span>
+              <section>
+                <h2 className="text-[10px] font-bold tracking-[0.4em] text-gold-600 uppercase mb-8">Payment Method</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label className={`group flex flex-col p-6 border transition-all duration-500 cursor-pointer ${paymentMethod === 'cod' ? 'border-black bg-black text-white' : 'border-gray-100 hover:border-gold-300'}`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <input type="radio" name="payment" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="h-4 w-4 accent-gold-500" />
+                      <span className={`text-[10px] font-bold tracking-widest uppercase ${paymentMethod === 'cod' ? 'text-gold-400' : 'text-gray-400'}`}>Traditional</span>
+                    </div>
+                    <span className="text-sm font-bold uppercase tracking-widest">Cash on Delivery</span>
+                    <p className={`text-[10px] mt-2 ${paymentMethod === 'cod' ? 'text-gray-400' : 'text-gray-500'}`}>Pay when you receive your items</p>
                   </label>
 
                   {Object.entries(paymentSettings).map(([id, config]: [string, any]) => (
-                    <label key={id} className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                      paymentMethod === id 
-                        ? id === 'bkash' ? 'border-pink-600 bg-pink-50' 
-                        : id === 'nagad' ? 'border-orange-600 bg-orange-50'
-                        : id === 'rocket' ? 'border-purple-600 bg-purple-50'
-                        : 'border-blue-600 bg-blue-50'
-                        : 'border-gray-200 hover:bg-gray-50'
+                    <label key={id} className={`group flex flex-col p-6 border transition-all duration-500 cursor-pointer ${
+                      paymentMethod === id ? 'border-black bg-black text-white' : 'border-gray-100 hover:border-gold-300'
                     }`}>
-                      <input type="radio" name="payment" value={id} checked={paymentMethod === id} onChange={() => setPaymentMethod(id as any)} className="h-4 w-4" />
-                      <div className="ml-3">
-                        <span className={`font-medium capitalize ${
-                          id === 'bkash' ? 'text-pink-700' 
-                          : id === 'nagad' ? 'text-orange-700'
-                          : id === 'rocket' ? 'text-purple-700'
-                          : 'text-blue-700'
-                        }`}>{id}</span>
-                        {config.type !== 'auto' && (
-                          <span className="ml-2 text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full capitalize">
-                            {config.type}
-                          </span>
-                        )}
-                        {config.type === 'auto' && (
-                          <span className="ml-2 text-xs text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">
-                            Auto Payment
-                          </span>
-                        )}
+                      <div className="flex items-center justify-between mb-4">
+                        <input type="radio" name="payment" value={id} checked={paymentMethod === id} onChange={() => setPaymentMethod(id as any)} className="h-4 w-4 accent-gold-500" />
+                        <span className={`text-[10px] font-bold tracking-widest uppercase ${
+                          paymentMethod === id ? 'text-gold-400' : 'text-gray-400'
+                        }`}>Digital</span>
                       </div>
+                      <span className="text-sm font-bold uppercase tracking-widest capitalize">{id}</span>
+                      <p className={`text-[10px] mt-2 ${paymentMethod === id ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {config.type === 'auto' ? 'Instant Automatic Payment' : `Manual ${config.type} Transfer`}
+                      </p>
                     </label>
                   ))}
                 </div>
 
                 {paymentMethod !== 'cod' && paymentSettings[paymentMethod]?.type !== 'auto' && (
-                  <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p className="text-sm text-gray-700 mb-4">
-                      Please send <strong>৳ {total}</strong> to our {paymentMethod} {paymentSettings[paymentMethod]?.type} number: <strong>{paymentSettings[paymentMethod]?.number || '017XXXXXXXX'}</strong>.
-                    </p>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Transaction ID</label>
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mt-8 p-8 bg-gray-50 border border-gray-100"
+                  >
+                    <div className="flex items-start gap-4 mb-8">
+                      <div className="h-10 w-10 rounded-full bg-gold-100 flex items-center justify-center text-gold-600 flex-shrink-0">
+                        <AlertCircle className="h-5 w-5" />
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        Please send <strong className="text-black">৳ {total}</strong> to our <span className="capitalize font-bold">{paymentMethod}</span> {paymentSettings[paymentMethod]?.type} number: <strong className="text-black">{paymentSettings[paymentMethod]?.number || '017XXXXXXXX'}</strong>.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Transaction ID</label>
                         <Input name="transactionId" placeholder="e.g. 8N7A6B5C4D" required value={formData.transactionId} onChange={handleInputChange} />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Sender Number</label>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Sender Number</label>
                         <Input name="senderNumber" placeholder="e.g. 017XXXXXXXX" required value={formData.senderNumber} onChange={handleInputChange} />
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
 
                 {paymentMethod !== 'cod' && paymentSettings[paymentMethod]?.type === 'auto' && (
-                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                    <p className="text-sm text-blue-700">
-                      You will be redirected to the <strong>{paymentMethod}</strong> secure payment gateway to complete your transaction automatically.
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mt-8 p-8 bg-gold-50 border border-gold-100"
+                  >
+                    <p className="text-sm text-gold-800 leading-relaxed italic">
+                      You will be redirected to the <strong className="capitalize">{paymentMethod}</strong> secure payment gateway to complete your transaction automatically.
                     </p>
-                  </div>
+                  </motion.div>
                 )}
-              </div>
+              </section>
             </form>
           </div>
 
           <div className="lg:col-span-5">
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm sticky top-24">
-              <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-              <div className="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2">
+            <div className="bg-white p-10 border border-gray-100 sticky top-32">
+              <h2 className="text-[10px] font-bold tracking-[0.4em] text-gold-600 uppercase mb-10">Order Summary</h2>
+              
+              <div className="space-y-8 mb-10 max-h-[400px] overflow-y-auto pr-4 no-scrollbar">
                 {items.map(item => (
-                  <div key={item.id} className="flex gap-4">
-                    <div className="h-16 w-16 rounded-md border border-gray-200 overflow-hidden flex-shrink-0">
-                      <img src={item.images[0]} alt={item.name} className="h-full w-full object-cover" />
+                  <div key={item.id} className="flex gap-6 group">
+                    <div className="h-24 w-20 overflow-hidden bg-gray-50 flex-shrink-0">
+                      <img src={item.images[0]} alt={item.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     </div>
-                    <div className="flex-1 text-sm">
-                      <h3 className="font-medium text-gray-900 line-clamp-1">{item.name}</h3>
-                      <p className="text-gray-500">Qty: {item.quantity}</p>
-                    </div>
-                    <div className="text-sm font-medium text-gray-900">
-                      ৳ {(item.discountPrice || item.price) * item.quantity}
+                    <div className="flex-1 flex flex-col justify-center">
+                      <h3 className="text-sm font-bold text-gray-900 line-clamp-1 font-serif tracking-tight mb-1">{item.name}</h3>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-2">Qty: {item.quantity}</p>
+                      <div className="text-sm font-bold text-gray-900 tracking-tighter">
+                        ৳ {(item.discountPrice || item.price) * item.quantity}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
               
-              <div className="border-t border-gray-200 pt-4 space-y-2 text-sm">
-                <div className="flex justify-between text-gray-600">
+              <div className="space-y-4 pt-8 border-t border-gray-100">
+                <div className="flex justify-between text-[10px] font-bold tracking-widest uppercase text-gray-400">
                   <span>Subtotal</span>
-                  <span>৳ {subtotal}</span>
+                  <span className="text-gray-900">৳ {subtotal}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-[10px] font-bold tracking-widest uppercase text-gray-400">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `৳ ${shipping}`}</span>
+                  <span className="text-gray-900">{shipping === 0 ? 'Complimentary' : `৳ ${shipping}`}</span>
                 </div>
-                <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200 mt-2">
-                  <span>Total</span>
-                  <span>৳ {total}</span>
+                <div className="flex justify-between items-baseline pt-6 border-t border-gray-100 mt-6">
+                  <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-900">Total Amount</span>
+                  <span className="text-3xl font-bold text-gray-900 tracking-tighter">৳ {total}</span>
                 </div>
               </div>
 
               <Button 
                 type="submit" 
                 form="checkout-form" 
-                className="w-full mt-6 h-12 text-lg flex items-center justify-center gap-2"
+                className="w-full mt-10 h-14 rounded-none"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Processing...
-                  </>
-                ) : 'Place Order'}
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : 'Complete Purchase'}
               </Button>
+              
+              <div className="mt-8 flex items-center justify-center gap-4 opacity-30 grayscale">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/BKash_Logo.svg/512px-BKash_Logo.svg.png" alt="bKash" className="h-4" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Nagad_Logo.svg/512px-Nagad_Logo.svg.png" alt="Nagad" className="h-4" />
+                <div className="h-4 w-[1px] bg-gray-300"></div>
+                <Shield className="h-4 w-4" />
+              </div>
             </div>
           </div>
         </div>
