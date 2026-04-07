@@ -14,6 +14,11 @@ create table if not exists public.outlet_images (
 
 alter table public.outlet_images enable row level security;
 
+-- Ensure admin role for specific emails
+update public.profiles 
+set role = 'admin' 
+where email in ('alaminid6@gmail.com', 'admin@nobabistyle.com');
+
 drop policy if exists "Public outlet images are viewable by everyone." on public.outlet_images;
 drop policy if exists "Admins can insert outlet images." on public.outlet_images;
 drop policy if exists "Admins can delete outlet images." on public.outlet_images;
@@ -23,12 +28,14 @@ create policy "Public outlet images are viewable by everyone."
 
 create policy "Admins can insert outlet images." 
   on public.outlet_images for insert with check (
-    exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+    exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') OR 
+    (auth.jwt() ->> 'email') in ('alaminid6@gmail.com', 'admin@nobabistyle.com')
   );
 
 create policy "Admins can delete outlet images." 
   on public.outlet_images for delete using (
-    exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+    exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') OR 
+    (auth.jwt() ->> 'email') in ('alaminid6@gmail.com', 'admin@nobabistyle.com')
   );
 
 -- Create storage bucket for outlet images
@@ -47,11 +54,21 @@ create policy "Public Access"
 
 create policy "Admin Insert"
   on storage.objects for insert
-  with check ( bucket_id = 'outlet-images' and exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') );
+  with check ( 
+    bucket_id = 'outlet-images' and (
+      exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') OR 
+      (auth.jwt() ->> 'email') in ('alaminid6@gmail.com', 'admin@nobabistyle.com')
+    )
+  );
 
 create policy "Admin Delete"
   on storage.objects for delete
-  using ( bucket_id = 'outlet-images' and exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') );
+  using ( 
+    bucket_id = 'outlet-images' and (
+      exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') OR 
+      (auth.jwt() ->> 'email') in ('alaminid6@gmail.com', 'admin@nobabistyle.com')
+    )
+  );
 `;
 
 export function AdminOutlet() {
