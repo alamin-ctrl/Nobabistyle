@@ -195,19 +195,19 @@ export function AdminDashboard() {
   return (
     <div className="space-y-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-10">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-serif tracking-tight text-gray-900">Executive Overview</h1>
-          <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase font-bold">Real-time performance metrics</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-black/5 pb-10">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-serif tracking-tight text-black uppercase">Executive Overview</h1>
+          <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-bold">Real-time performance metrics</p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 text-[10px] font-bold tracking-widest uppercase text-gray-400">
-            <Calendar className="h-3 w-3" />
+          <div className="flex items-center gap-2 px-6 py-3 bg-white border border-black/5 text-[10px] font-bold tracking-[0.3em] uppercase text-black">
+            <Calendar className="h-3 w-3 text-gold-500" />
             Last 30 Days
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2 bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100 text-[10px] font-bold tracking-widest uppercase transition-all"
+            className="flex items-center gap-2 px-6 py-3 bg-black text-white hover:bg-gold-500 hover:text-black text-[10px] font-bold tracking-[0.3em] uppercase transition-all duration-500"
           >
             <ShieldAlert className="h-3 w-3" />
             System SQL
@@ -216,9 +216,9 @@ export function AdminDashboard() {
       </div>
       
       {loading ? (
-        <div className="h-96 flex flex-col items-center justify-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
-          <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase font-bold">Synchronizing Data...</p>
+        <div className="h-96 flex flex-col items-center justify-center gap-6">
+          <Loader2 className="h-10 w-10 animate-spin text-gold-500" />
+          <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-bold">Synchronizing Atelier Data...</p>
         </div>
       ) : (
         <>
@@ -226,87 +226,87 @@ export function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { label: 'Total Revenue', value: `৳ ${stats.revenue.toLocaleString()}`, sub: 'Lifetime earnings', icon: DollarSign, color: 'gold', trend: '+12%' },
-              { label: 'Total Orders', value: stats.orders, sub: `${stats.pendingOrders} pending`, icon: ShoppingCart, color: 'blue', trend: '+5%' },
-              { label: 'Product Inventory', value: stats.products, sub: `${stats.outOfStock} out of stock`, icon: Package, color: 'purple', trend: 'Stable' },
-              { label: 'Active Customers', value: stats.customers, sub: 'Registered users', icon: Users, color: 'orange', trend: '+8%' },
+              { label: 'Total Orders', value: stats.orders, sub: `${stats.pendingOrders} pending`, icon: ShoppingCart, color: 'black', trend: '+5%' },
+              { label: 'Product Inventory', value: stats.products, sub: `${stats.outOfStock} out of stock`, icon: Package, color: 'black', trend: 'Stable' },
+              { label: 'Active Customers', value: stats.customers, sub: 'Registered users', icon: Users, color: 'black', trend: '+8%' },
             ].map((stat, i) => (
               <motion.div 
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white p-8 border border-gray-100 shadow-premium group hover:border-gold-200 transition-all duration-500"
+                className="bg-white p-10 border border-black/5 shadow-sm group hover:border-gold-500 transition-all duration-700"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <div className={`h-12 w-12 rounded-full bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600 border border-${stat.color}-100`}>
+                <div className="flex items-center justify-between mb-8">
+                  <div className={`h-12 w-12 rounded-none bg-gray-50 flex items-center justify-center text-black border border-black/5 group-hover:border-gold-500/30 transition-colors`}>
                     <stat.icon className="h-5 w-5 stroke-[1.5px]" />
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] font-bold text-green-600">
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-green-600 tracking-widest uppercase">
                     <TrendingUp className="h-3 w-3" />
                     {stat.trend}
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">{stat.label}</p>
-                  <p className="text-3xl font-bold text-gray-900 tracking-tighter">{stat.value}</p>
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase">{stat.label}</p>
+                  <p className="text-3xl font-bold text-black tracking-widest">{stat.value}</p>
                 </div>
-                <p className="text-[10px] text-gray-400 mt-4 font-medium uppercase tracking-widest">{stat.sub}</p>
+                <p className="text-[10px] text-gray-400 mt-6 font-bold uppercase tracking-[0.2em]">{stat.sub}</p>
               </motion.div>
             ))}
           </div>
 
           {/* Recent Activity */}
-          <div className="space-y-8">
-            <div className="flex items-end justify-between border-b border-gray-100 pb-6">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-serif tracking-tight text-gray-900">Recent Transactions</h2>
-                <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase font-bold">Latest order activity</p>
+          <div className="space-y-10">
+            <div className="flex items-end justify-between border-b border-black/5 pb-8">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-serif tracking-tight text-black uppercase">Recent Transactions</h2>
+                <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-bold">Latest order activity</p>
               </div>
-              <button className="flex items-center gap-2 text-[10px] font-bold tracking-widest text-gold-600 uppercase hover:text-gold-700 transition-colors">
+              <button className="flex items-center gap-2 text-[10px] font-bold tracking-[0.3em] text-gold-500 uppercase hover:text-black transition-all duration-500">
                 View All Orders <ArrowUpRight className="h-3 w-3" />
               </button>
             </div>
 
-            <div className="bg-white border border-gray-100 shadow-premium overflow-hidden">
+            <div className="bg-white border border-black/5 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-gray-50/50 border-b border-gray-100">
-                      <th className="px-8 py-5 text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">Reference</th>
-                      <th className="px-8 py-5 text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">Customer Identity</th>
-                      <th className="px-8 py-5 text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">Date</th>
-                      <th className="px-8 py-5 text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">Amount</th>
-                      <th className="px-8 py-5 text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase text-right">Status</th>
+                    <tr className="bg-gray-50/50 border-b border-black/5">
+                      <th className="px-10 py-6 text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase">Reference</th>
+                      <th className="px-10 py-6 text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase">Customer Identity</th>
+                      <th className="px-10 py-6 text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase">Date</th>
+                      <th className="px-10 py-6 text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase">Amount</th>
+                      <th className="px-10 py-6 text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase text-right">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
+                  <tbody className="divide-y divide-black/5">
                     {recentOrders.map((order, i) => (
                       <motion.tr 
                         key={order.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.05 }}
-                        className="hover:bg-gray-50/50 transition-colors group"
+                        className="hover:bg-gray-50/30 transition-colors group"
                       >
-                        <td className="px-8 py-6">
-                          <span className="text-xs font-bold text-gray-900 tracking-tighter">#{order.id.split('-')[0].toUpperCase()}</span>
+                        <td className="px-10 py-8">
+                          <span className="text-xs font-bold text-black tracking-widest uppercase">#{order.id.split('-')[0]}</span>
                         </td>
-                        <td className="px-8 py-6">
+                        <td className="px-10 py-8">
                           <div className="flex flex-col">
-                            <span className="text-xs font-medium text-gray-900">{order.user_email}</span>
-                            <span className="text-[9px] text-gray-400 uppercase tracking-widest mt-0.5">Verified Client</span>
+                            <span className="text-xs font-medium text-black tracking-wide">{order.user_email}</span>
+                            <span className="text-[9px] text-gray-400 uppercase tracking-[0.2em] mt-1 font-bold">Verified Client</span>
                           </div>
                         </td>
-                        <td className="px-8 py-6">
-                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <td className="px-10 py-8">
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
                             {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </span>
                         </td>
-                        <td className="px-8 py-6">
-                          <span className="text-sm font-bold text-gray-900 tracking-tighter">৳ {order.total_amount}</span>
+                        <td className="px-10 py-8">
+                          <span className="text-sm font-bold text-black tracking-widest">৳ {order.total_amount}</span>
                         </td>
-                        <td className="px-8 py-6 text-right">
-                          <span className={`inline-flex items-center px-3 py-1 text-[9px] font-bold tracking-widest uppercase border ${getStatusColor(order.status)}`}>
+                        <td className="px-10 py-8 text-right">
+                          <span className={`inline-flex items-center px-4 py-1.5 text-[9px] font-bold tracking-[0.2em] uppercase border ${getStatusColor(order.status)}`}>
                             {order.status}
                           </span>
                         </td>
@@ -314,10 +314,10 @@ export function AdminDashboard() {
                     ))}
                     {recentOrders.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-8 py-20 text-center">
-                          <div className="flex flex-col items-center gap-4">
-                            <ShoppingCart className="h-8 w-8 text-gray-100" />
-                            <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase font-bold">No recent transactions found</p>
+                        <td colSpan={5} className="px-10 py-24 text-center">
+                          <div className="flex flex-col items-center gap-6">
+                            <ShoppingCart className="h-10 w-10 text-gray-100" />
+                            <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-bold">No recent transactions found</p>
                           </div>
                         </td>
                       </tr>

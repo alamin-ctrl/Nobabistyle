@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { useCartStore } from '../store/useCartStore';
-import { Star, Truck, Shield, ArrowLeft, Plus, Minus, Loader2, Share2, Heart, ArrowRight } from 'lucide-react';
+import { Star, Truck, Shield, ArrowLeft, Plus, Minus, Loader2, Share2, Heart, ArrowRight, MessageCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useProduct, useProducts } from '../hooks/useProducts';
 import { motion } from 'motion/react';
@@ -65,10 +65,10 @@ export function ProductDetails() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
           {/* Product Images */}
           <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-6">
-            <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto no-scrollbar md:max-h-[600px]">
+            <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto no-scrollbar md:max-h-[600px] px-2 md:px-0">
               {product.images.map((img, idx) => (
                 <button 
                   key={idx}
@@ -94,36 +94,36 @@ export function ProductDetails() {
           </div>
 
           {/* Product Info */}
-          <div className="lg:col-span-5 flex flex-col">
+          <div className="lg:col-span-5 flex flex-col px-2 sm:px-0">
             <div className="mb-10">
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-[10px] font-bold tracking-[0.3em] text-gold-600 uppercase">{product.category}</span>
-                <div className="h-[1px] w-12 bg-gold-200"></div>
-                <div className="flex items-center gap-1 text-[10px] text-gold-600 font-bold">
+                <span className="text-[10px] font-bold tracking-[0.4em] text-gold-500 uppercase">{product.category}</span>
+                <div className="h-[1px] w-12 bg-gold-500"></div>
+                <div className="flex items-center gap-1 text-[10px] text-gold-500 font-bold tracking-[0.2em] uppercase">
                   <Star className="h-3 w-3 fill-current" />
                   <span>{product.rating} ({product.reviews} reviews)</span>
                 </div>
               </div>
               
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-serif leading-tight">{product.name}</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-6 font-serif uppercase tracking-tight leading-tight">{product.name}</h1>
               
-              <div className="flex items-baseline gap-6 mb-10">
+              <div className="flex items-baseline gap-4 sm:gap-6 mb-10">
                 {product.discountPrice ? (
                   <>
-                    <span className="text-3xl font-bold text-gray-900 tracking-tighter">৳ {product.discountPrice}</span>
-                    <span className="text-xl text-gray-400 line-through tracking-tighter">৳ {product.price}</span>
-                    <span className="bg-red-50 text-red-600 px-3 py-1 text-[10px] font-bold tracking-widest uppercase">
+                    <span className="text-2xl sm:text-3xl font-bold text-black tracking-widest">৳ {product.discountPrice}</span>
+                    <span className="text-lg sm:text-xl text-gray-400 line-through tracking-widest">৳ {product.price}</span>
+                    <span className="bg-black text-white px-3 py-1 text-[9px] sm:text-[10px] font-bold tracking-[0.3em] uppercase">
                       Save ৳ {product.price - product.discountPrice}
                     </span>
                   </>
                 ) : (
-                  <span className="text-3xl font-bold text-gray-900 tracking-tighter">৳ {product.price}</span>
+                  <span className="text-2xl sm:text-3xl font-bold text-black tracking-widest">৳ {product.price}</span>
                 )}
               </div>
 
-              <div className="prose prose-sm text-gray-600 max-w-none mb-12">
-                <p className="font-light leading-relaxed text-lg italic mb-6">"{product.description}"</p>
-                <div className="space-y-4 text-sm">
+              <div className="prose prose-sm text-gray-500 max-w-none mb-12">
+                <p className="font-light leading-relaxed text-base sm:text-lg tracking-wide mb-6">"{product.description}"</p>
+                <div className="space-y-4 text-sm tracking-wide font-light">
                   <p>• Premium quality craftsmanship</p>
                   <p>• Designed for modern elegance</p>
                   <p>• Sustainable and ethical production</p>
@@ -132,10 +132,10 @@ export function ProductDetails() {
             </div>
 
             <div className="space-y-8">
-              <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="flex items-center border border-gray-200 h-14 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                <div className="flex items-center border border-black/10 h-14 w-full sm:w-auto">
                   <button 
-                    className="px-6 h-full text-gray-400 hover:text-black hover:bg-gray-50 disabled:opacity-30 transition-all"
+                    className="flex-1 sm:px-6 h-full text-gray-400 hover:text-black hover:bg-gray-50 disabled:opacity-30 transition-all flex items-center justify-center"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
                   >
@@ -143,7 +143,7 @@ export function ProductDetails() {
                   </button>
                   <span className="w-16 text-center font-bold text-sm tracking-widest">{quantity}</span>
                   <button 
-                    className="px-6 h-full text-gray-400 hover:text-black hover:bg-gray-50 disabled:opacity-30 transition-all"
+                    className="flex-1 sm:px-6 h-full text-gray-400 hover:text-black hover:bg-gray-50 disabled:opacity-30 transition-all flex items-center justify-center"
                     onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                     disabled={quantity >= product.stock}
                   >
@@ -152,7 +152,7 @@ export function ProductDetails() {
                 </div>
                 <Button 
                   size="lg" 
-                  className="flex-1 w-full rounded-none h-14"
+                  className="flex-1 w-full rounded-none h-14 bg-black text-white hover:bg-gold-500 hover:text-black transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase"
                   onClick={handleAddToCart}
                   disabled={product.stock === 0}
                 >
@@ -160,7 +160,21 @@ export function ProductDetails() {
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-10 border-y border-gray-100">
+              {/* WhatsApp Order Button */}
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="w-full rounded-none h-14 flex items-center justify-center gap-3 border-black/20 text-black hover:border-black hover:bg-black hover:text-white transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase"
+                onClick={() => {
+                  const message = `Hi, I would like to order ${product.name} (ID: ${product.id}). Price: ৳${product.discountPrice || product.price}. Quantity: ${quantity}.`;
+                  window.open(`https://wa.me/8801327263208?text=${encodeURIComponent(message)}`, '_blank');
+                }}
+              >
+                <MessageCircle className="h-5 w-5" />
+                Order via WhatsApp
+              </Button>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 py-10 border-y border-gray-100">
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-gold-50 flex items-center justify-center text-gold-600">
                     <Truck className="h-5 w-5 stroke-[1.5px]" />
@@ -179,6 +193,17 @@ export function ProductDetails() {
                     <p className="text-[10px] text-gray-500 uppercase tracking-widest">100% Protected Payments</p>
                   </div>
                 </div>
+              </div>
+
+              {/* Payment Options Text */}
+              <div className="bg-gray-50 p-6 flex flex-col gap-3 border border-gray-100">
+                <p className="text-sm text-gray-900 font-bold flex items-center gap-2 tracking-wide">
+                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                  Cash on Delivery Available
+                </p>
+                <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                  We also accept secure mobile payments via <span className="text-pink-600 font-bold">bKash</span>, <span className="text-orange-500 font-bold">Nagad</span>, and <span className="text-purple-600 font-bold">Rocket</span>.
+                </p>
               </div>
             </div>
           </div>

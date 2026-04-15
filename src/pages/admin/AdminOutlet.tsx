@@ -112,7 +112,10 @@ export function AdminOutlet() {
         .from('outlet-images')
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Storage upload error details:', uploadError);
+        throw new Error(`Storage error: ${uploadError.message}`);
+      }
 
       const { data: { publicUrl } } = supabase.storage
         .from('outlet-images')
@@ -122,12 +125,15 @@ export function AdminOutlet() {
         .from('outlet_images')
         .insert([{ url: publicUrl }]);
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Database insert error details:', dbError);
+        throw new Error(`Database error: ${dbError.message}`);
+      }
 
       await fetchImages();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading image:', error);
-      alert('Error uploading image. Please make sure you have run the SQL setup.');
+      alert(`Error uploading image: ${error.message || 'Unknown error'}. Please make sure you have run the SQL setup.`);
     } finally {
       setUploading(false);
       if (event.target) {
@@ -163,16 +169,16 @@ export function AdminOutlet() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-10">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-serif tracking-tight text-gray-900">Offline Outlet</h1>
-          <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase font-bold">Manage flagship store gallery</p>
+    <div className="space-y-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-black/5 pb-10">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-serif tracking-tight text-black uppercase">Offline Outlet</h1>
+          <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-bold">Manage flagship store gallery</p>
         </div>
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2 bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100 text-[10px] font-bold tracking-widest uppercase transition-all"
+            className="flex items-center gap-2 px-6 py-3 bg-black text-white hover:bg-gold-500 hover:text-black text-[10px] font-bold tracking-[0.3em] uppercase transition-all duration-500"
           >
             <ShieldAlert className="h-3 w-3" />
             Setup Database
@@ -180,11 +186,11 @@ export function AdminOutlet() {
         </div>
       </div>
 
-      <div className="bg-white p-8 border border-gray-100 shadow-premium">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-xl font-serif text-gray-900">Store Gallery</h2>
-            <p className="text-xs text-gray-500 mt-1">Upload images to display in the offline store section.</p>
+      <div className="bg-white p-10 border border-black/5 shadow-sm">
+        <div className="flex items-center justify-between mb-12">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-serif text-black uppercase tracking-tight">Store Gallery</h2>
+            <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-bold">Upload images to showcase your atelier</p>
           </div>
           <div>
             <input
@@ -196,7 +202,11 @@ export function AdminOutlet() {
               disabled={uploading}
             />
             <label htmlFor="image-upload">
-              <Button as="span" className="cursor-pointer flex items-center gap-2" disabled={uploading}>
+              <Button 
+                as="span" 
+                className="cursor-pointer flex items-center gap-3 rounded-none h-14 px-8 bg-black text-white hover:bg-gold-500 hover:text-black transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase" 
+                disabled={uploading}
+              >
                 {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                 {uploading ? 'Uploading...' : 'Upload Image'}
               </Button>
@@ -205,34 +215,35 @@ export function AdminOutlet() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
+          <div className="flex flex-col justify-center items-center py-32 gap-6">
+            <Loader2 className="h-10 w-10 animate-spin text-gold-500" />
+            <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-bold">Loading Gallery...</p>
           </div>
         ) : images.length === 0 ? (
-          <div className="text-center py-20 border-2 border-dashed border-gray-100">
-            <Store className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium">No images uploaded yet.</p>
-            <p className="text-xs text-gray-400 mt-1">Upload your first image to showcase your offline outlet.</p>
+          <div className="text-center py-32 border border-dashed border-black/5 bg-gray-50/30">
+            <Store className="h-12 w-12 text-gray-200 mx-auto mb-6" />
+            <p className="text-black font-serif text-xl uppercase tracking-tight mb-2">No images uploaded yet</p>
+            <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-bold">Upload your first image to showcase your flagship store</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {images.map((image, index) => (
               <motion.div 
                 key={image.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="group relative aspect-square overflow-hidden bg-gray-50 border border-gray-100"
+                className="group relative aspect-[3/4] overflow-hidden bg-gray-50 border border-black/5"
               >
                 <img 
                   src={image.url} 
                   alt="Outlet" 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
                   <button
                     onClick={() => handleDelete(image.id, image.url)}
-                    className="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300"
+                    className="p-4 bg-white text-black hover:bg-red-500 hover:text-white transition-all duration-500 transform translate-y-4 group-hover:translate-y-0"
                   >
                     <Trash2 className="h-5 w-5" />
                   </button>

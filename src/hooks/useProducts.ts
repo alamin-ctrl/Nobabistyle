@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, hasSupabaseConfig } from '../lib/supabase';
-import { Product, Category } from '../data/mockData';
+import { Product, Category, mockProducts } from '../data/mockData';
 
 export function useProducts(category?: string) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -27,7 +27,7 @@ export function useProducts(category?: string) {
         
         if (err) throw err;
         
-        if (data) {
+        if (data && data.length > 0) {
           // Map database snake_case to frontend camelCase
           const formattedData: Product[] = data.map(d => ({
             id: d.id,
@@ -43,11 +43,15 @@ export function useProducts(category?: string) {
             reviews: d.reviews || 0,
           }));
           setProducts(formattedData);
+        } else {
+          // Fallback to mock data
+          setProducts(category && category !== 'all' ? mockProducts.filter(p => p.category === category) : mockProducts);
         }
       } catch (err: any) {
         console.error('Error fetching products:', err);
         setError(err.message);
-        setProducts([]);
+        // Fallback to mock data on error
+        setProducts(category && category !== 'all' ? mockProducts.filter(p => p.category === category) : mockProducts);
       } finally {
         setLoading(false);
       }
@@ -101,11 +105,13 @@ export function useProduct(id?: string) {
             rating: data.rating || 0,
             reviews: data.reviews || 0,
           });
+        } else {
+          setProduct(mockProducts.find(p => p.id === id) || null);
         }
       } catch (err: any) {
         console.error('Error fetching product:', err);
         setError(err.message);
-        setProduct(null);
+        setProduct(mockProducts.find(p => p.id === id) || null);
       } finally {
         setLoading(false);
       }

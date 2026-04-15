@@ -49,9 +49,9 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           )}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-white/90 backdrop-blur-sm z-10">
+        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-black/80 backdrop-blur-sm z-10">
           <Button 
-            className="w-full rounded-none h-10 text-[10px] tracking-[0.2em] flex items-center justify-center gap-2"
+            className="w-full rounded-none h-10 text-[10px] tracking-[0.3em] flex items-center justify-center gap-2 bg-transparent text-white border border-white/20 hover:bg-white hover:text-black transition-colors"
             onClick={(e) => {
               e.preventDefault();
               addItem(product);
@@ -63,29 +63,23 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         </div>
       </Link>
       
-      <div className="flex flex-col pt-5 pb-2">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-[10px] text-gray-400 uppercase tracking-[0.3em] font-bold">{product.category}</p>
-          <div className="flex items-center gap-1 text-[10px] text-gold-600">
-            <Star className="h-3 w-3 fill-current" />
-            <span className="font-bold">{product.rating}</span>
-          </div>
-        </div>
+      <div className="flex flex-col pt-6 pb-2 text-center">
+        <p className="text-[10px] text-gold-500 uppercase tracking-[0.5em] font-bold mb-3">{product.category}</p>
         
-        <h3 className="text-sm font-medium text-gray-900 mb-2 font-serif tracking-tight group-hover:text-gold-600 transition-colors duration-300">
+        <h3 className="text-sm text-black mb-4 font-serif tracking-widest uppercase group-hover:text-gold-600 transition-colors duration-500">
           <Link to={`/product/${product.id}`}>
             {product.name}
           </Link>
         </h3>
         
-        <div className="flex items-baseline gap-3">
+        <div className="flex items-center justify-center gap-4">
           {product.discountPrice ? (
             <>
-              <span className="text-sm font-bold text-gray-900 tracking-tight">৳ {product.discountPrice}</span>
-              <span className="text-[11px] text-gray-400 line-through tracking-tight">৳ {product.price}</span>
+              <span className="text-base font-bold text-black tracking-widest">৳ {product.discountPrice}</span>
+              <span className="text-[11px] text-gray-300 line-through tracking-widest">৳ {product.price}</span>
             </>
           ) : (
-            <span className="text-sm font-bold text-gray-900 tracking-tight">৳ {product.price}</span>
+            <span className="text-base font-bold text-black tracking-widest">৳ {product.price}</span>
           )}
         </div>
       </div>

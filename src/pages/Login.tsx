@@ -112,15 +112,15 @@ export function Login() {
         >
           <div className="space-y-4">
             <Link to="/" className="inline-block">
-              <h1 className="text-2xl font-serif tracking-tighter text-gray-900">
-                Nobabi <span className="italic text-gold-600">Style</span>
+              <h1 className="text-2xl font-serif tracking-tighter text-black uppercase">
+                Nobabi <span className="italic text-gold-500">Style</span>
               </h1>
             </Link>
-            <div className="space-y-2">
-              <h2 className="text-3xl font-serif tracking-tight text-gray-900">
+            <div className="space-y-3">
+              <h2 className="text-3xl font-serif tracking-tight text-black uppercase">
                 {isSignUp ? 'Create an account' : 'Sign in to your account'}
               </h2>
-              <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase font-bold">
+              <p className="text-[10px] tracking-[0.4em] text-gray-400 uppercase font-bold">
                 {isSignUp ? 'Join our exclusive community' : 'Access your personal atelier'}
               </p>
             </div>
@@ -132,7 +132,7 @@ export function Login() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="p-4 bg-red-50 text-[10px] font-bold tracking-widest text-red-600 uppercase border border-red-100"
+                className="p-4 bg-red-50 text-[10px] font-bold tracking-[0.3em] text-red-600 uppercase border border-red-100"
               >
                 {error}
               </motion.div>
@@ -142,17 +142,17 @@ export function Login() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="p-4 bg-green-50 text-[10px] font-bold tracking-widest text-green-700 uppercase border border-green-100"
+                className="p-4 bg-green-50 text-[10px] font-bold tracking-[0.3em] text-green-700 uppercase border border-green-100"
               >
                 {successMsg}
               </motion.div>
             )}
           </AnimatePresence>
 
-          <form className="space-y-8" onSubmit={handleSubmit}>
-            <div className="space-y-6">
-              <div className="space-y-2 group">
-                <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 group-focus-within:text-gold-600 transition-colors">
+          <form className="space-y-10" onSubmit={handleSubmit}>
+            <div className="space-y-8">
+              <div className="space-y-3 group">
+                <label className="text-[10px] font-bold tracking-[0.4em] uppercase text-gray-400 group-focus-within:text-gold-500 transition-colors">
                   Email Address
                 </label>
                 <div className="relative">
@@ -162,14 +162,14 @@ export function Login() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-transparent border-b border-gray-100 py-4 pl-8 text-sm tracking-widest text-gray-900 focus:outline-none focus:border-gold-500 transition-all uppercase font-light placeholder:text-gray-300"
+                    className="w-full bg-transparent border-b border-black/5 py-4 pl-8 text-sm tracking-[0.2em] text-black focus:outline-none focus:border-gold-500 transition-all uppercase font-light placeholder:text-gray-200"
                     placeholder="YOU@EXAMPLE.COM"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2 group">
-                <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 group-focus-within:text-gold-600 transition-colors">
+              <div className="space-y-3 group">
+                <label className="text-[10px] font-bold tracking-[0.4em] uppercase text-gray-400 group-focus-within:text-gold-500 transition-colors">
                   Password
                 </label>
                 <div className="relative">
@@ -179,7 +179,7 @@ export function Login() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-transparent border-b border-gray-100 py-4 pl-8 text-sm tracking-widest text-gray-900 focus:outline-none focus:border-gold-500 transition-all uppercase font-light placeholder:text-gray-300"
+                    className="w-full bg-transparent border-b border-black/5 py-4 pl-8 text-sm tracking-[0.2em] text-black focus:outline-none focus:border-gold-500 transition-all uppercase font-light placeholder:text-gray-200"
                     placeholder="••••••••"
                     minLength={6}
                   />
@@ -187,10 +187,10 @@ export function Login() {
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <Button 
                 type="submit" 
-                className="w-full h-14 rounded-none flex items-center justify-center gap-3 group" 
+                className="w-full h-14 rounded-none bg-black text-white hover:bg-gold-500 hover:text-black transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase flex items-center justify-center gap-3 group" 
                 disabled={loading}
               >
                 {loading ? (
@@ -211,7 +211,7 @@ export function Login() {
                     setError(null);
                     setSuccessMsg(null);
                   }}
-                  className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 hover:text-gold-600 transition-colors"
+                  className="text-[10px] font-bold tracking-[0.4em] uppercase text-gray-400 hover:text-gold-500 transition-colors"
                 >
                   {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Create one"}
                 </button>
@@ -219,9 +219,9 @@ export function Login() {
             </div>
           </form>
 
-          <div className="pt-12 border-t border-gray-50 flex items-center justify-center gap-4">
+          <div className="pt-12 border-t border-black/5 flex items-center justify-center gap-4">
             <ShieldCheck className="h-4 w-4 text-gray-300" />
-            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Secure Authentication</p>
+            <p className="text-[10px] text-gray-400 uppercase tracking-[0.4em] font-bold">Secure Authentication</p>
           </div>
         </motion.div>
       </div>
