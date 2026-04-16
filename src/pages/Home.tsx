@@ -34,7 +34,6 @@ export function Home() {
   }, []);
 
   const featuredProducts = displayedProducts.slice(0, 4);
-  const digitalProducts = displayedProducts.filter(p => p.isDigital).slice(0, 4);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -146,7 +145,7 @@ export function Home() {
       )}
 
       {/* Featured Products */}
-      <section className="py-24 sm:py-40 bg-white">
+      <section className={`py-24 sm:py-40 ${category === 'Cosmetics' ? 'bg-rose-50' : 'bg-white'}`}>
         <div className="container mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -156,8 +155,8 @@ export function Home() {
             className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 sm:mb-24 gap-8"
           >
             <div className="space-y-4">
-              <span className="text-gold-500 text-[10px] tracking-[0.6em] uppercase font-bold block">Curated Selection</span>
-              <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-black font-serif uppercase tracking-tight leading-none">
+              <span className={`${category === 'Cosmetics' ? 'text-rose-400' : 'text-gold-500'} text-[10px] tracking-[0.6em] uppercase font-bold block`}>Curated Selection</span>
+              <h2 className={`text-4xl sm:text-5xl md:text-7xl font-bold ${category === 'Cosmetics' ? 'text-rose-950' : 'text-black'} font-serif uppercase tracking-tight leading-none`}>
                 {category ? `${category} Collection` : 'New Arrivals'}
               </h2>
             </div>
@@ -169,16 +168,16 @@ export function Home() {
           </motion.div>
           
           {error ? (
-            <div className="text-center py-32 bg-gray-50 border border-black/5">
-              <p className="text-gray-400 text-[10px] tracking-[0.3em] uppercase font-bold">Unable to connect to the collection.</p>
+            <div className={`text-center py-32 ${category === 'Cosmetics' ? 'bg-rose-100/50 border-rose-200' : 'bg-gray-50 border-black/5'} border`}>
+              <p className={`${category === 'Cosmetics' ? 'text-rose-400' : 'text-gray-400'} text-[10px] tracking-[0.3em] uppercase font-bold`}>Unable to connect to the collection.</p>
             </div>
           ) : loading ? (
             <div className="flex justify-center py-32">
-              <Loader2 className="h-12 w-12 animate-spin text-gold-500" />
+              <Loader2 className={`h-12 w-12 animate-spin ${category === 'Cosmetics' ? 'text-rose-400' : 'text-gold-500'}`} />
             </div>
           ) : displayedProducts.length === 0 ? (
-            <div className="text-center py-32 border border-black/5">
-              <p className="text-gray-400 text-[10px] tracking-[0.3em] uppercase font-bold italic">Our collection is currently being updated.</p>
+            <div className={`text-center py-32 border ${category === 'Cosmetics' ? 'border-rose-200' : 'border-black/5'}`}>
+              <p className={`${category === 'Cosmetics' ? 'text-rose-400' : 'text-gray-400'} text-[10px] tracking-[0.3em] uppercase font-bold italic`}>Our collection is currently being updated.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-24">
@@ -198,9 +197,133 @@ export function Home() {
         </div>
       </section>
 
-      {/* Digital Products - Minimalist Grid */}
+      {/* Category Sections */}
+      {!category && ['Panjabi', 'T-Shirts', 'Shirts', 'Pants', 'Shoes', 'Accessories'].map((cat, idx) => {
+        const catProducts = displayedProducts.filter(p => p.category === cat).slice(0, 4);
+        if (catProducts.length === 0) return null;
+        const isEven = idx % 2 === 0;
+        return (
+          <section key={cat} className={`py-24 sm:py-40 ${isEven ? 'bg-gray-50' : 'bg-white'}`}>
+            <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 sm:mb-24 gap-8"
+              >
+                <div className="space-y-4">
+                  <span className="text-gold-500 text-[10px] tracking-[0.6em] uppercase font-bold block">{cat} Collection</span>
+                  <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-black font-serif uppercase tracking-tight leading-none">{cat}</h2>
+                </div>
+                <Link to={`/category/${cat}`} className="group flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.4em] text-black hover:text-gold-500 transition-all duration-500 pb-2 border-b border-black/5 hover:border-gold-500">
+                  View All <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
+                </Link>
+              </motion.div>
+
+              {loading ? (
+                <div className="flex justify-center py-32">
+                  <Loader2 className="h-12 w-12 animate-spin text-gold-500" />
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-24">
+                  {catProducts.map((product, index) => (
+                    <motion.div
+                      key={product.id}
+                      initial={{ opacity: 0, y: 40 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: index * 0.1 }}
+                    >
+                      <ProductCard product={product} />
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        );
+      })}
+
+      {/* Our Outlets Section */}
       {!category && (
-        <section className="py-24 sm:py-40 bg-gray-50">
+        <section className="py-24 sm:py-32 bg-gray-50">
+          <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16 sm:mb-24"
+            >
+              <span className="text-gold-500 text-[10px] tracking-[0.6em] uppercase font-bold block mb-4">Discover</span>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-black font-serif uppercase tracking-tight">Our Outlets</h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+              {/* Nobabi Style Card */}
+              <motion.div 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="group relative bg-white overflow-hidden"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=1200" 
+                    alt="Nobabi Style" 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-8 sm:p-12 text-center border border-t-0 border-black/5">
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold uppercase tracking-widest mb-4">Nobabi Style</h3>
+                  <p className="text-gray-500 font-light leading-relaxed mb-8">
+                    Men's fashion destination featuring premium clothing, shoes, and curated accessories.
+                  </p>
+                  <Link to="/">
+                    <Button variant="outline" className="rounded-none border-black text-black hover:bg-black hover:text-white transition-colors duration-300 text-[10px] font-bold tracking-[0.3em] uppercase px-8 py-6">
+                      Explore
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+
+              {/* Nobabi Cosmetics Card */}
+              <motion.div 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="group relative bg-rose-50/50 overflow-hidden border border-rose-100"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1596462502278-27bf85033e5a?auto=format&fit=crop&q=80&w=1200" 
+                    alt="Nobabi Cosmetics" 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-8 sm:p-12 text-center border-t border-rose-100">
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold uppercase tracking-widest mb-4 text-rose-950">Nobabi Cosmetics</h3>
+                  <p className="text-rose-900/70 font-light leading-relaxed mb-8">
+                    Exclusive beauty and cosmetic products curated for elegance and sophistication.
+                  </p>
+                  <Link to="/category/Cosmetics">
+                    <Button variant="outline" className="rounded-none border-rose-200 text-rose-900 hover:bg-rose-100 hover:text-rose-950 transition-colors duration-300 text-[10px] font-bold tracking-[0.3em] uppercase px-8 py-6">
+                      Explore
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Nobabi Cosmetics Section */}
+      {!category && (
+        <section className="py-24 sm:py-40 bg-rose-50">
           <div className="container mx-auto px-6 sm:px-8 lg:px-12">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -210,21 +333,21 @@ export function Home() {
               className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 sm:mb-24 gap-8"
             >
               <div className="space-y-4">
-                <span className="text-gold-500 text-[10px] tracking-[0.6em] uppercase font-bold block">Exclusive Assets</span>
-                <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-black font-serif uppercase tracking-tight leading-none">Digital Atelier</h2>
+                <span className="text-rose-400 text-[10px] tracking-[0.6em] uppercase font-bold block">Beauty & Elegance</span>
+                <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-rose-950 font-serif uppercase tracking-tight leading-none">Nobabi Cosmetics</h2>
               </div>
-              <Link to="/category/Digital" className="group flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.4em] text-black hover:text-gold-500 transition-all duration-500 pb-2 border-b border-black/5 hover:border-gold-500">
-                View Gallery <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
+              <Link to="/category/Cosmetics" className="group flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.4em] text-rose-950 hover:text-rose-500 transition-all duration-500 pb-2 border-b border-rose-950/10 hover:border-rose-500">
+                View All <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
               </Link>
             </motion.div>
 
             {loading ? (
               <div className="flex justify-center py-32">
-                <Loader2 className="h-12 w-12 animate-spin text-gold-500" />
+                <Loader2 className="h-12 w-12 animate-spin text-rose-400" />
               </div>
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-24">
-                {digitalProducts.map((product, index) => (
+                {displayedProducts.filter(p => p.category === 'Cosmetics').slice(0, 4).map((product, index) => (
                   <motion.div
                     key={product.id}
                     initial={{ opacity: 0, y: 40 }}

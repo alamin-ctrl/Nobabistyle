@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, User, Menu, Search, X } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { useUserStore } from '../../store/useUserStore';
@@ -11,44 +11,51 @@ export function Navbar() {
   const { isAuthenticated, user, logout } = useUserStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const location = useLocation();
+  
+  const isCosmetics = location.pathname.includes('/category/Cosmetics');
 
   return (
     <>
-      <nav className="sticky top-0 z-40 w-full bg-black/95 backdrop-blur-md border-b border-white/10">
+      <nav className={`sticky top-0 z-40 w-full backdrop-blur-md border-b ${isCosmetics ? 'bg-rose-50/95 border-rose-200' : 'bg-black/95 border-white/10'}`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             <div className="flex items-center">
               <Link to="/" className="flex items-center gap-2 group">
-                <span className="text-xl sm:text-2xl font-bold tracking-widest text-white font-serif">
-                  NOBABI <span className="text-gold-500 font-normal italic">STYLE</span>
+                <span className={`text-xl sm:text-2xl font-bold tracking-widest font-serif ${isCosmetics ? 'text-rose-950' : 'text-white'}`}>
+                  NOBABI <span className={`${isCosmetics ? 'text-rose-400' : 'text-gold-500'} font-normal italic`}>{isCosmetics ? 'COSMETICS' : 'STYLE'}</span>
                 </span>
               </Link>
             </div>
 
             <div className="flex items-center gap-4 sm:gap-8 ml-auto">
               {/* Desktop Navigation */}
-              <div className="hidden lg:flex items-center space-x-10">
-                <Link to="/" className="text-white hover:text-gold-500 transition-colors text-[10px] font-bold tracking-[0.3em] uppercase">Home</Link>
-                <Link to="/category/Men" className="text-white hover:text-gold-500 transition-colors text-[10px] font-bold tracking-[0.3em] uppercase">Men</Link>
-                <Link to="/category/Women" className="text-white hover:text-gold-500 transition-colors text-[10px] font-bold tracking-[0.3em] uppercase">Women</Link>
-                <Link to="/category/Digital" className="text-white hover:text-gold-500 transition-colors text-[10px] font-bold tracking-[0.3em] uppercase">Digital</Link>
+              <div className="hidden lg:flex items-center space-x-8">
+                <Link to="/" className={`${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>Home</Link>
+                <Link to="/category/Panjabi" className={`${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>Panjabi</Link>
+                <Link to="/category/T-Shirts" className={`${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>T-Shirts</Link>
+                <Link to="/category/Shirts" className={`${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>Shirts</Link>
+                <Link to="/category/Pants" className={`${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>Pants</Link>
+                <Link to="/category/Shoes" className={`${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>Shoes</Link>
+                <Link to="/category/Accessories" className={`${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>Accessories</Link>
+                <Link to="/category/Cosmetics" className={`${isCosmetics ? 'text-rose-500' : 'text-white hover:text-gold-500'} transition-colors text-[10px] font-bold tracking-[0.3em] uppercase`}>Cosmetics</Link>
               </div>
 
               <div className="flex items-center gap-1 sm:gap-4">
                 <div className="hidden xl:flex relative">
-                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                  <Search className={`absolute left-3 top-2.5 h-4 w-4 ${isCosmetics ? 'text-rose-400' : 'text-gray-400'}`} />
                   <input
                     type="search"
                     placeholder="SEARCH..."
-                    className="h-9 w-40 xl:w-56 rounded-none border-b border-white/20 bg-transparent text-white pl-10 pr-4 text-[10px] tracking-widest outline-none focus:border-gold-500 transition-all placeholder-gray-500 uppercase"
+                    className={`h-9 w-40 xl:w-56 rounded-none border-b bg-transparent pl-10 pr-4 text-[10px] tracking-widest outline-none transition-all uppercase ${isCosmetics ? 'border-rose-200 text-rose-950 focus:border-rose-400 placeholder-rose-300' : 'border-white/20 text-white focus:border-gold-500 placeholder-gray-500'}`}
                   />
                 </div>
 
                 <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => setIsCartOpen(true)} className="relative text-white hover:text-gold-500 hover:bg-white/5 rounded-none h-11 w-11">
+                  <Button variant="ghost" size="icon" onClick={() => setIsCartOpen(true)} className={`relative rounded-none h-11 w-11 ${isCosmetics ? 'text-rose-900 hover:text-rose-500 hover:bg-rose-100' : 'text-white hover:text-gold-500 hover:bg-white/5'}`}>
                     <ShoppingCart className="h-5 w-5" />
                     {totalItems > 0 && (
-                      <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-gold-500 text-[10px] font-bold text-black">
+                      <span className={`absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${isCosmetics ? 'bg-rose-400 text-white' : 'bg-gold-500 text-black'}`}>
                         {totalItems}
                       </span>
                     )}
@@ -57,15 +64,15 @@ export function Navbar() {
                   {isAuthenticated ? (
                     <div className="flex items-center gap-1">
                       <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'}>
-                        <Button variant="ghost" size="icon" className="text-white hover:text-gold-500 hover:bg-white/5 rounded-none h-11 w-11">
+                        <Button variant="ghost" size="icon" className={`rounded-none h-11 w-11 ${isCosmetics ? 'text-rose-900 hover:text-rose-500 hover:bg-rose-100' : 'text-white hover:text-gold-500 hover:bg-white/5'}`}>
                           <User className="h-5 w-5" />
                         </Button>
                       </Link>
-                      <Button variant="ghost" size="sm" onClick={logout} className="hidden sm:flex text-gray-400 hover:text-gold-500 text-[10px] uppercase tracking-widest font-bold h-11 px-4">Logout</Button>
+                      <Button variant="ghost" size="sm" onClick={logout} className={`hidden sm:flex text-[10px] uppercase tracking-widest font-bold h-11 px-4 ${isCosmetics ? 'text-rose-400 hover:text-rose-600' : 'text-gray-400 hover:text-gold-500'}`}>Logout</Button>
                     </div>
                   ) : (
                     <Link to="/login">
-                      <Button variant="ghost" size="icon" className="text-white hover:text-gold-500 hover:bg-white/5 rounded-none h-11 w-11">
+                      <Button variant="ghost" size="icon" className={`rounded-none h-11 w-11 ${isCosmetics ? 'text-rose-900 hover:text-rose-500 hover:bg-rose-100' : 'text-white hover:text-gold-500 hover:bg-white/5'}`}>
                         <User className="h-5 w-5" />
                       </Button>
                     </Link>
@@ -74,7 +81,7 @@ export function Navbar() {
 
                 {/* Mobile menu button */}
                 <div className="flex lg:hidden">
-                  <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white hover:text-gold-500 hover:bg-white/5 rounded-none h-11 w-11">
+                  <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className={`rounded-none h-11 w-11 ${isCosmetics ? 'text-rose-900 hover:text-rose-500 hover:bg-rose-100' : 'text-white hover:text-gold-500 hover:bg-white/5'}`}>
                     {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                   </Button>
                 </div>
@@ -85,19 +92,23 @@ export function Navbar() {
 
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/10 bg-black animate-in slide-in-from-top duration-300">
+          <div className={`lg:hidden border-t animate-in slide-in-from-top duration-300 ${isCosmetics ? 'border-rose-200 bg-rose-50' : 'border-white/10 bg-black'}`}>
             <div className="space-y-1 px-4 pb-6 pt-4">
-              <Link to="/" className="block px-3 py-3 text-[10px] font-bold text-white hover:bg-white/5 hover:text-gold-500 uppercase tracking-[0.3em]" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-              <Link to="/category/Men" className="block px-3 py-3 text-[10px] font-bold text-white hover:bg-white/5 hover:text-gold-500 uppercase tracking-[0.3em]" onClick={() => setIsMobileMenuOpen(false)}>Men</Link>
-              <Link to="/category/Women" className="block px-3 py-3 text-[10px] font-bold text-white hover:bg-white/5 hover:text-gold-500 uppercase tracking-[0.3em]" onClick={() => setIsMobileMenuOpen(false)}>Women</Link>
-              <Link to="/category/Digital" className="block px-3 py-3 text-[10px] font-bold text-white hover:bg-white/5 hover:text-gold-500 uppercase tracking-[0.3em]" onClick={() => setIsMobileMenuOpen(false)}>Digital</Link>
+              <Link to="/" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-900 hover:bg-rose-100 hover:text-rose-500' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+              <Link to="/category/Panjabi" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-900 hover:bg-rose-100 hover:text-rose-500' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>Panjabi</Link>
+              <Link to="/category/T-Shirts" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-900 hover:bg-rose-100 hover:text-rose-500' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>T-Shirts</Link>
+              <Link to="/category/Shirts" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-900 hover:bg-rose-100 hover:text-rose-500' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>Shirts</Link>
+              <Link to="/category/Pants" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-900 hover:bg-rose-100 hover:text-rose-500' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>Pants</Link>
+              <Link to="/category/Shoes" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-900 hover:bg-rose-100 hover:text-rose-500' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>Shoes</Link>
+              <Link to="/category/Accessories" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-900 hover:bg-rose-100 hover:text-rose-500' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>Accessories</Link>
+              <Link to="/category/Cosmetics" className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-500 hover:bg-rose-100' : 'text-white hover:bg-white/5 hover:text-gold-500'}`} onClick={() => setIsMobileMenuOpen(false)}>Cosmetics</Link>
               
-              <div className="pt-4 pb-2 border-t border-white/10 mt-4">
+              <div className={`pt-4 pb-2 border-t mt-4 ${isCosmetics ? 'border-rose-200' : 'border-white/10'}`}>
                 {isAuthenticated ? (
                   <div className="space-y-1">
                     <Link 
                       to={user?.role === 'admin' ? '/admin' : '/dashboard'} 
-                      className="block px-3 py-3 text-[10px] font-bold text-gold-500 hover:bg-white/5 uppercase tracking-[0.3em]"
+                      className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-500 hover:bg-rose-100' : 'text-gold-500 hover:bg-white/5'}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
@@ -107,7 +118,7 @@ export function Navbar() {
                         logout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full text-left block px-3 py-3 text-[10px] font-bold text-gray-400 hover:bg-white/5 hover:text-gold-500 uppercase tracking-[0.3em]"
+                      className={`w-full text-left block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-400 hover:bg-rose-100 hover:text-rose-600' : 'text-gray-400 hover:bg-white/5 hover:text-gold-500'}`}
                     >
                       Logout
                     </button>
@@ -115,7 +126,7 @@ export function Navbar() {
                 ) : (
                   <Link 
                     to="/login" 
-                    className="block px-3 py-3 text-[10px] font-bold text-gold-500 hover:bg-white/5 uppercase tracking-[0.3em]"
+                    className={`block px-3 py-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-500 hover:bg-rose-100' : 'text-gold-500 hover:bg-white/5'}`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Login / Register

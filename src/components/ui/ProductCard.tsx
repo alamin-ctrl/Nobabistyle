@@ -8,6 +8,7 @@ import { motion } from 'motion/react';
 
 export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const addItem = useCartStore((state) => state.addItem);
+  const isCosmetics = product.category === 'Cosmetics';
 
   return (
     <motion.div 
@@ -32,7 +33,7 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             <motion.div 
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              className="bg-black text-white px-3 py-1 text-[10px] font-bold tracking-widest uppercase"
+              className={`${isCosmetics ? 'bg-rose-950' : 'bg-black'} text-white px-3 py-1 text-[10px] font-bold tracking-widest uppercase`}
             >
               Sale
             </motion.div>
@@ -42,16 +43,16 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="bg-gold-500 text-black px-3 py-1 text-[10px] font-bold tracking-widest uppercase"
+              className={`${isCosmetics ? 'bg-rose-400 text-white' : 'bg-gold-500 text-black'} px-3 py-1 text-[10px] font-bold tracking-widest uppercase`}
             >
               Digital
             </motion.div>
           )}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-black/80 backdrop-blur-sm z-10">
+        <div className={`absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ${isCosmetics ? 'bg-rose-950/80' : 'bg-black/80'} backdrop-blur-sm z-10`}>
           <Button 
-            className="w-full rounded-none h-10 text-[10px] tracking-[0.3em] flex items-center justify-center gap-2 bg-transparent text-white border border-white/20 hover:bg-white hover:text-black transition-colors"
+            className={`w-full rounded-none h-10 text-[10px] tracking-[0.3em] flex items-center justify-center gap-2 bg-transparent text-white border border-white/20 ${isCosmetics ? 'hover:bg-white hover:text-rose-950' : 'hover:bg-white hover:text-black'} transition-colors`}
             onClick={(e) => {
               e.preventDefault();
               addItem(product);
@@ -64,9 +65,9 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       </Link>
       
       <div className="flex flex-col pt-6 pb-2 text-center">
-        <p className="text-[10px] text-gold-500 uppercase tracking-[0.5em] font-bold mb-3">{product.category}</p>
+        <p className={`text-[10px] ${isCosmetics ? 'text-rose-400' : 'text-gold-500'} uppercase tracking-[0.5em] font-bold mb-3`}>{product.category}</p>
         
-        <h3 className="text-sm text-black mb-4 font-serif tracking-widest uppercase group-hover:text-gold-600 transition-colors duration-500">
+        <h3 className={`text-sm text-black mb-4 font-serif tracking-widest uppercase ${isCosmetics ? 'group-hover:text-rose-600' : 'group-hover:text-gold-600'} transition-colors duration-500`}>
           <Link to={`/product/${product.id}`}>
             {product.name}
           </Link>

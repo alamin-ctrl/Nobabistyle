@@ -23,7 +23,7 @@ export function ProductDetails() {
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-white">
-        <Loader2 className="h-10 w-10 animate-spin text-gold-500" />
+        <Loader2 className="h-10 w-10 animate-spin text-gray-400" />
       </div>
     );
   }
@@ -37,6 +37,7 @@ export function ProductDetails() {
     );
   }
 
+  const isCosmetics = product.category === 'Cosmetics';
   const relatedProducts = allProducts.filter(p => p.id !== product.id).slice(0, 4);
 
   const handleAddToCart = () => {
@@ -49,19 +50,19 @@ export function ProductDetails() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
-      className="bg-white"
+      className={isCosmetics ? 'bg-rose-50/30' : 'bg-white'}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         <div className="flex items-center justify-between mb-12">
           <button 
             onClick={() => navigate(-1)} 
-            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 hover:text-black transition-colors"
+            className={`group flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.3em] ${isCosmetics ? 'text-rose-400 hover:text-rose-950' : 'text-gray-400 hover:text-black'} transition-colors`}
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Back to Collection
           </button>
           <div className="flex items-center gap-4">
-            <button className="p-2 text-gray-400 hover:text-black transition-colors"><Share2 className="h-4 w-4" /></button>
-            <button className="p-2 text-gray-400 hover:text-red-500 transition-colors"><Heart className="h-4 w-4" /></button>
+            <button className={`p-2 transition-colors ${isCosmetics ? 'text-rose-400 hover:text-rose-950' : 'text-gray-400 hover:text-black'}`}><Share2 className="h-4 w-4" /></button>
+            <button className={`p-2 transition-colors ${isCosmetics ? 'text-rose-400 hover:text-rose-600' : 'text-gray-400 hover:text-red-500'}`}><Heart className="h-4 w-4" /></button>
           </div>
         </div>
 
@@ -73,7 +74,7 @@ export function ProductDetails() {
                 <button 
                   key={idx}
                   onClick={() => setActiveImage(idx)}
-                  className={`relative flex-shrink-0 w-20 h-24 md:w-24 md:h-32 overflow-hidden border-2 transition-all duration-300 ${activeImage === idx ? 'border-gold-500' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                  className={`relative flex-shrink-0 w-20 h-24 md:w-24 md:h-32 overflow-hidden border-2 transition-all duration-300 ${activeImage === idx ? (isCosmetics ? 'border-rose-400' : 'border-gold-500') : 'border-transparent opacity-60 hover:opacity-100'}`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -83,7 +84,7 @@ export function ProductDetails() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="flex-1 aspect-[3/4] overflow-hidden bg-gray-50"
+              className={`flex-1 aspect-[3/4] overflow-hidden ${isCosmetics ? 'bg-rose-50' : 'bg-gray-50'}`}
             >
               <img 
                 src={product.images[activeImage]} 
@@ -97,27 +98,27 @@ export function ProductDetails() {
           <div className="lg:col-span-5 flex flex-col px-2 sm:px-0">
             <div className="mb-10">
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-[10px] font-bold tracking-[0.4em] text-gold-500 uppercase">{product.category}</span>
-                <div className="h-[1px] w-12 bg-gold-500"></div>
-                <div className="flex items-center gap-1 text-[10px] text-gold-500 font-bold tracking-[0.2em] uppercase">
+                <span className={`text-[10px] font-bold tracking-[0.4em] uppercase ${isCosmetics ? 'text-rose-400' : 'text-gold-500'}`}>{product.category}</span>
+                <div className={`h-[1px] w-12 ${isCosmetics ? 'bg-rose-400' : 'bg-gold-500'}`}></div>
+                <div className={`flex items-center gap-1 text-[10px] ${isCosmetics ? 'text-rose-400' : 'text-gold-500'} font-bold tracking-[0.2em] uppercase`}>
                   <Star className="h-3 w-3 fill-current" />
                   <span>{product.rating} ({product.reviews} reviews)</span>
                 </div>
               </div>
               
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-6 font-serif uppercase tracking-tight leading-tight">{product.name}</h1>
+              <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${isCosmetics ? 'text-rose-950' : 'text-black'} mb-6 font-serif uppercase tracking-tight leading-tight`}>{product.name}</h1>
               
               <div className="flex items-baseline gap-4 sm:gap-6 mb-10">
                 {product.discountPrice ? (
                   <>
-                    <span className="text-2xl sm:text-3xl font-bold text-black tracking-widest">৳ {product.discountPrice}</span>
+                    <span className={`text-2xl sm:text-3xl font-bold ${isCosmetics ? 'text-rose-950' : 'text-black'} tracking-widest`}>৳ {product.discountPrice}</span>
                     <span className="text-lg sm:text-xl text-gray-400 line-through tracking-widest">৳ {product.price}</span>
-                    <span className="bg-black text-white px-3 py-1 text-[9px] sm:text-[10px] font-bold tracking-[0.3em] uppercase">
+                    <span className={`${isCosmetics ? 'bg-rose-950' : 'bg-black'} text-white px-3 py-1 text-[9px] sm:text-[10px] font-bold tracking-[0.3em] uppercase`}>
                       Save ৳ {product.price - product.discountPrice}
                     </span>
                   </>
                 ) : (
-                  <span className="text-2xl sm:text-3xl font-bold text-black tracking-widest">৳ {product.price}</span>
+                  <span className={`text-2xl sm:text-3xl font-bold ${isCosmetics ? 'text-rose-950' : 'text-black'} tracking-widest`}>৳ {product.price}</span>
                 )}
               </div>
 
@@ -152,7 +153,7 @@ export function ProductDetails() {
                 </div>
                 <Button 
                   size="lg" 
-                  className="flex-1 w-full rounded-none h-14 bg-black text-white hover:bg-gold-500 hover:text-black transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase"
+                  className={`flex-1 w-full rounded-none h-14 transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase ${isCosmetics ? 'bg-rose-950 text-white hover:bg-rose-400 hover:text-white' : 'bg-black text-white hover:bg-gold-500 hover:text-black'}`}
                   onClick={handleAddToCart}
                   disabled={product.stock === 0}
                 >
@@ -164,7 +165,7 @@ export function ProductDetails() {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="w-full rounded-none h-14 flex items-center justify-center gap-3 border-black/20 text-black hover:border-black hover:bg-black hover:text-white transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase"
+                className={`w-full rounded-none h-14 flex items-center justify-center gap-3 transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase ${isCosmetics ? 'border-rose-200 text-rose-950 hover:border-rose-950 hover:bg-rose-950 hover:text-white' : 'border-black/20 text-black hover:border-black hover:bg-black hover:text-white'}`}
                 onClick={() => {
                   const message = `Hi, I would like to order ${product.name} (ID: ${product.id}). Price: ৳${product.discountPrice || product.price}. Quantity: ${quantity}.`;
                   window.open(`https://wa.me/8801327263208?text=${encodeURIComponent(message)}`, '_blank');
@@ -176,7 +177,7 @@ export function ProductDetails() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 py-10 border-y border-gray-100">
                 <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-gold-50 flex items-center justify-center text-gold-600">
+                  <div className={`h-10 w-10 rounded-full flex items-center justify-center ${isCosmetics ? 'bg-rose-100 text-rose-600' : 'bg-gold-50 text-gold-600'}`}>
                     <Truck className="h-5 w-5 stroke-[1.5px]" />
                   </div>
                   <div>
@@ -185,7 +186,7 @@ export function ProductDetails() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-gold-50 flex items-center justify-center text-gold-600">
+                  <div className={`h-10 w-10 rounded-full flex items-center justify-center ${isCosmetics ? 'bg-rose-100 text-rose-600' : 'bg-gold-50 text-gold-600'}`}>
                     <Shield className="h-5 w-5 stroke-[1.5px]" />
                   </div>
                   <div>
@@ -196,7 +197,7 @@ export function ProductDetails() {
               </div>
 
               {/* Payment Options Text */}
-              <div className="bg-gray-50 p-6 flex flex-col gap-3 border border-gray-100">
+              <div className={`p-6 flex flex-col gap-3 border ${isCosmetics ? 'bg-rose-50/50 border-rose-100' : 'bg-gray-50 border-gray-100'}`}>
                 <p className="text-sm text-gray-900 font-bold flex items-center gap-2 tracking-wide">
                   <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
                   Cash on Delivery Available
@@ -214,10 +215,10 @@ export function ProductDetails() {
           <div className="mt-32">
             <div className="flex flex-col md:flex-row items-baseline justify-between mb-16 gap-4">
               <div>
-                <h2 className="text-4xl font-bold text-gray-900 font-serif mb-2">Complete the Look</h2>
-                <p className="text-gray-500 text-sm tracking-widest uppercase font-bold">Curated recommendations for you</p>
+                <h2 className={`text-4xl font-bold ${isCosmetics ? 'text-rose-950' : 'text-gray-900'} font-serif mb-2`}>Complete the Look</h2>
+                <p className={`text-sm tracking-widest uppercase font-bold ${isCosmetics ? 'text-rose-400' : 'text-gray-500'}`}>Curated recommendations for you</p>
               </div>
-              <Link to={`/category/${product.category}`} className="group flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-900 hover:text-gold-600 transition-colors">
+              <Link to={`/category/${product.category}`} className={`group flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${isCosmetics ? 'text-rose-900 hover:text-rose-500' : 'text-gray-900 hover:text-gold-600'}`}>
                 Explore Category <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>

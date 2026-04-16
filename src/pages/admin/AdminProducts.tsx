@@ -123,7 +123,7 @@ export function AdminProducts() {
         price: '',
         discountPrice: '',
         stock: '',
-        category: 'Men',
+        category: 'Panjabi',
         images: '',
         isDigital: false
       });
@@ -377,10 +377,13 @@ export function AdminProducts() {
                       onChange={e => setFormData({...formData, category: e.target.value})}
                       className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
                     >
-                      <option value="Men">Men</option>
-                      <option value="Women">Women</option>
-                      <option value="Kids">Kids</option>
-                      <option value="Digital">Digital</option>
+                      <option value="Panjabi">Panjabi</option>
+                      <option value="T-Shirts">T-Shirts</option>
+                      <option value="Shirts">Shirts</option>
+                      <option value="Pants">Pants</option>
+                      <option value="Shoes">Shoes</option>
+                      <option value="Accessories">Accessories</option>
+                      <option value="Cosmetics">Cosmetics</option>
                     </select>
                   </div>
                 </div>
