@@ -38,6 +38,41 @@ export function ProductDetails() {
   }
 
   const isCosmetics = product.category === 'Cosmetics';
+
+  if (isCosmetics) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.8 }}
+        className="bg-rose-50/30 min-h-screen py-24"
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <button 
+            onClick={() => navigate(-1)} 
+            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.3em] text-rose-400 hover:text-rose-950 transition-colors mb-12"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Back to Collection
+          </button>
+          <div className="flex flex-col items-center justify-center py-32 sm:py-40 border border-rose-200/50 bg-white/50 relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&q=80')] opacity-5 bg-cover bg-center"></div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative z-10 text-center space-y-6"
+            >
+              <h3 className="text-4xl sm:text-5xl md:text-7xl font-serif text-rose-950 uppercase tracking-widest">Launching Soon</h3>
+              <p className="text-rose-400 text-xs sm:text-sm tracking-[0.4em] uppercase font-bold">Something beautiful is coming your way</p>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
   const relatedProducts = allProducts.filter(p => p.id !== product.id).slice(0, 4);
 
   const handleAddToCart = () => {

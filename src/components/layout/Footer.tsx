@@ -21,10 +21,10 @@ export function Footer() {
               Redefining luxury through a blend of heritage and modern aesthetics. Our atelier brings you the finest selections in fashion and digital craftsmanship.
             </p>
             <div className="flex items-center gap-6">
-              <a href="#" className={`${isCosmetics ? 'text-rose-400 hover:text-rose-600' : 'text-gray-500 hover:text-gold-500'} transition-colors`}>
+              <a href="https://www.facebook.com/nobabistyle" target="_blank" rel="noopener noreferrer" className={`${isCosmetics ? 'text-rose-400 hover:text-rose-600' : 'text-gray-500 hover:text-gold-500'} transition-colors`}>
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className={`${isCosmetics ? 'text-rose-400 hover:text-rose-600' : 'text-gray-500 hover:text-gold-500'} transition-colors`}>
+              <a href="https://www.instagram.com/nobabistyle" target="_blank" rel="noopener noreferrer" className={`${isCosmetics ? 'text-rose-400 hover:text-rose-600' : 'text-gray-500 hover:text-gold-500'} transition-colors`}>
                 <Instagram className="h-5 w-5" />
               </a>
               <a href="#" className={`${isCosmetics ? 'text-rose-400 hover:text-rose-600' : 'text-gray-500 hover:text-gold-500'} transition-colors`}>

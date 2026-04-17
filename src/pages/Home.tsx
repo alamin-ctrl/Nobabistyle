@@ -175,6 +175,20 @@ export function Home() {
             <div className="flex justify-center py-32">
               <Loader2 className={`h-12 w-12 animate-spin ${category === 'Cosmetics' ? 'text-rose-400' : 'text-gold-500'}`} />
             </div>
+          ) : category === 'Cosmetics' ? (
+            <div className="flex flex-col items-center justify-center py-32 sm:py-40 border border-rose-200/50 bg-white/50 relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&q=80')] opacity-5 bg-cover bg-center"></div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="relative z-10 text-center space-y-6"
+              >
+                <h3 className="text-4xl sm:text-5xl md:text-7xl font-serif text-rose-950 uppercase tracking-widest">Launching Soon</h3>
+                <p className="text-rose-400 text-xs sm:text-sm tracking-[0.4em] uppercase font-bold">Something beautiful is coming your way</p>
+              </motion.div>
+            </div>
           ) : displayedProducts.length === 0 ? (
             <div className={`text-center py-32 border ${category === 'Cosmetics' ? 'border-rose-200' : 'border-black/5'}`}>
               <p className={`${category === 'Cosmetics' ? 'text-rose-400' : 'text-gray-400'} text-[10px] tracking-[0.3em] uppercase font-bold italic`}>Our collection is currently being updated.</p>
@@ -346,18 +360,18 @@ export function Home() {
                 <Loader2 className="h-12 w-12 animate-spin text-rose-400" />
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-24">
-                {displayedProducts.filter(p => p.category === 'Cosmetics').slice(0, 4).map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: index * 0.1 }}
-                  >
-                    <ProductCard product={product} />
-                  </motion.div>
-                ))}
+              <div className="flex flex-col items-center justify-center py-32 sm:py-40 border border-rose-200/50 bg-white/50 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&q=80')] opacity-5 bg-cover bg-center"></div>
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="relative z-10 text-center space-y-6"
+                >
+                  <h3 className="text-4xl sm:text-5xl md:text-7xl font-serif text-rose-950 uppercase tracking-widest">Launching Soon</h3>
+                  <p className="text-rose-400 text-xs sm:text-sm tracking-[0.4em] uppercase font-bold">Something beautiful is coming your way</p>
+                </motion.div>
               </div>
             )}
           </div>
