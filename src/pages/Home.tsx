@@ -400,6 +400,7 @@ export function Home() {
                         transition={{ duration: 0.5 }}
                         src={outletImages[activeImage].url} 
                         alt="Nobabi Style Store" 
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                       />
                     </div>
@@ -411,7 +412,7 @@ export function Home() {
                             onClick={() => setActiveImage(idx)}
                             className={`relative w-20 h-24 flex-shrink-0 overflow-hidden border-2 transition-all duration-300 ${activeImage === idx ? 'border-gold-500' : 'border-transparent opacity-60 hover:opacity-100'}`}
                           >
-                            <img src={img.url} alt="Store thumbnail" className="w-full h-full object-cover" />
+                            <img src={img.url} alt="Store thumbnail" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                           </button>
                         ))}
                       </div>
@@ -422,6 +423,7 @@ export function Home() {
                     <img 
                       src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000" 
                       alt="Nobabi Style Store" 
+                      referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                     />
                   </div>

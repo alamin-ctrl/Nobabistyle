@@ -111,7 +111,7 @@ export function ProductDetails() {
                   onClick={() => setActiveImage(idx)}
                   className={`relative flex-shrink-0 w-20 h-24 md:w-24 md:h-32 overflow-hidden border-2 transition-all duration-300 ${activeImage === idx ? (isCosmetics ? 'border-rose-400' : 'border-gold-500') : 'border-transparent opacity-60 hover:opacity-100'}`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -124,6 +124,7 @@ export function ProductDetails() {
               <img 
                 src={product.images[activeImage]} 
                 alt={product.name} 
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center"
               />
             </motion.div>

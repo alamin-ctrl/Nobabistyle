@@ -22,6 +22,7 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <motion.img
           src={product.images[0]}
           alt={product.name}
+          referrerPolicy="no-referrer"
           whileHover={{ scale: 1.08 }}
           transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
           className="h-full w-full object-cover object-center"
