@@ -15,10 +15,19 @@ export function ProductDetails() {
   const addItem = useCartStore(state => state.addItem);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+  useEffect(() => {
+    if (product) {
+      if (product.sizes?.length) setSelectedSize(product.sizes[0]);
+      if (product.colors?.length) setSelectedColor(product.colors[0]);
+    }
+  }, [product]);
 
   if (loading) {
     return (
@@ -169,7 +178,55 @@ export function ProductDetails() {
             </div>
 
             <div className="space-y-8">
-              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              {/* Product Variants (Size & Color) */}
+              {(product.sizes?.length > 0 || product.colors?.length > 0) && (
+                <div className="space-y-6 pt-6 border-t border-gray-100">
+                  {product.sizes && product.sizes.length > 0 && (
+                    <div>
+                      <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-black mb-3">Select Size</h4>
+                      <div className="flex flex-wrap gap-3">
+                        {product.sizes.map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => setSelectedSize(size)}
+                            className={`min-w-[3rem] h-10 px-3 border border-black/20 text-xs font-bold transition-all duration-300 ${
+                              selectedSize === size
+                                ? (isCosmetics ? 'bg-rose-950 text-white border-rose-950' : 'bg-black text-white border-black')
+                                : 'bg-white text-black hover:border-black'
+                            }`}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {product.colors && product.colors.length > 0 && (
+                    <div>
+                      <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-black mb-3">Select Color</h4>
+                      <div className="flex flex-wrap gap-3">
+                        {product.colors.map((color) => (
+                          <button
+                            key={color}
+                            onClick={() => setSelectedColor(color)}
+                            className={`min-w-[3rem] h-10 px-4 border border-black/20 text-xs font-bold capitalize transition-all duration-300 ${
+                              selectedColor === color
+                                ? (isCosmetics ? 'bg-rose-950 text-white border-rose-950' : 'bg-black text-white border-black')
+                                : 'bg-white text-black hover:border-black'
+                            }`}
+                          >
+                            {color}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Add to Cart / Quantity */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mt-8">
                 <div className="flex items-center border border-black/10 h-14 w-full sm:w-auto">
                   <button 
                     className="flex-1 sm:px-6 h-full text-gray-400 hover:text-black hover:bg-gray-50 disabled:opacity-30 transition-all flex items-center justify-center"
@@ -190,26 +247,43 @@ export function ProductDetails() {
                 <Button 
                   size="lg" 
                   className={`flex-1 w-full rounded-none h-14 transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase ${isCosmetics ? 'bg-rose-950 text-white hover:bg-rose-400 hover:text-white' : 'bg-black text-white hover:bg-gold-500 hover:text-black'}`}
-                  onClick={handleAddToCart}
+                  onClick={() => addItem(product, quantity, selectedSize, selectedColor)}
                   disabled={product.stock === 0}
                 >
                   {product.stock === 0 ? 'Out of Stock' : 'Add to Atelier'}
                 </Button>
               </div>
 
-              {/* WhatsApp Order Button */}
-              <Button 
-                size="lg" 
-                variant="outline"
-                className={`w-full rounded-none h-14 flex items-center justify-center gap-3 transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase ${isCosmetics ? 'border-rose-200 text-rose-950 hover:border-rose-950 hover:bg-rose-950 hover:text-white' : 'border-black/20 text-black hover:border-black hover:bg-black hover:text-white'}`}
-                onClick={() => {
-                  const message = `Hi, I would like to order ${product.name} (ID: ${product.id}). Price: ৳${product.discountPrice || product.price}. Quantity: ${quantity}.`;
-                  window.open(`https://wa.me/8801327263208?text=${encodeURIComponent(message)}`, '_blank');
-                }}
-              >
-                <MessageCircle className="h-5 w-5" />
-                Order via WhatsApp
-              </Button>
+              {/* Call to actions - Direct Order & WhatsApp */}
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <Button 
+                  size="lg" 
+                  className={`flex-1 w-full rounded-none h-14 transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase ${isCosmetics ? 'bg-rose-500 text-white hover:bg-rose-600' : 'bg-gold-500 text-black hover:bg-black hover:text-white'}`}
+                  onClick={() => {
+                    addItem(product, quantity, selectedSize, selectedColor);
+                    navigate('/checkout');
+                  }}
+                  disabled={product.stock === 0}
+                >
+                  Buy Now
+                </Button>
+
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className={`flex-1 w-full rounded-none h-14 flex items-center justify-center gap-3 transition-all duration-500 text-[10px] tracking-[0.3em] font-bold uppercase ${isCosmetics ? 'border-rose-200 text-rose-950 hover:border-rose-950 hover:bg-rose-950 hover:text-white' : 'border-black/20 text-black hover:border-black hover:bg-black hover:text-white'}`}
+                  onClick={() => {
+                    let details = `Hi, I would like to order ${product.name} (ID: ${product.id}).\n`;
+                    if (selectedSize) details += `Size: ${selectedSize}\n`;
+                    if (selectedColor) details += `Color: ${selectedColor}\n`;
+                    details += `Quantity: ${quantity}\nPrice: ৳${(product.discountPrice || product.price) * quantity}`;
+                    window.open(`https://wa.me/8801327263208?text=${encodeURIComponent(details)}`, '_blank');
+                  }}
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  Order via WhatsApp
+                </Button>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 py-10 border-y border-gray-100">
                 <div className="flex items-center gap-4">

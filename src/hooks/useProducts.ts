@@ -41,6 +41,8 @@ export function useProducts(category?: string) {
             isDigital: d.is_digital,
             rating: d.rating || 0,
             reviews: d.reviews || 0,
+            sizes: d.sizes || [],
+            colors: d.colors || [],
           }));
           setProducts(formattedData);
         } else {
@@ -104,6 +106,8 @@ export function useProduct(id?: string) {
             isDigital: data.is_digital,
             rating: data.rating || 0,
             reviews: data.reviews || 0,
+            sizes: data.sizes || [],
+            colors: data.colors || [],
           });
         } else {
           setProduct(mockProducts.find(p => p.id === id) || null);

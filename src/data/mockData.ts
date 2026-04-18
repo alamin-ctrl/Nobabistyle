@@ -12,6 +12,8 @@ export interface Product {
   isDigital: boolean;
   rating: number;
   reviews: number;
+  sizes?: string[];
+  colors?: string[];
 }
 
 export const mockProducts: Product[] = [

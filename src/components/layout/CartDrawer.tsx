@@ -64,7 +64,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               ) : (
                 <div className="space-y-8 sm:space-y-12">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-4 sm:gap-6 group">
+                    <div key={item.cartItemId} className="flex gap-4 sm:gap-6 group">
                       <div className="h-28 w-20 sm:h-32 sm:w-24 flex-shrink-0 overflow-hidden bg-gray-50 border border-black/5">
                         <img
                           src={item.images[0]}
@@ -82,13 +82,20 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             <p className="text-xs sm:text-sm font-medium text-black tracking-widest whitespace-nowrap">৳ {(item.discountPrice || item.price) * item.quantity}</p>
                           </div>
                           <p className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-[0.3em] font-bold mt-2">{item.category}</p>
+                          {(item.selectedSize !== 'none' || item.selectedColor !== 'none') && (
+                            <p className="text-[9px] sm:text-[10px] text-gray-400 capitalize font-bold mt-1">
+                              {item.selectedSize && item.selectedSize !== 'none' && `Size: ${item.selectedSize}`}
+                              {item.selectedSize && item.selectedSize !== 'none' && item.selectedColor && item.selectedColor !== 'none' && ' | '}
+                              {item.selectedColor && item.selectedColor !== 'none' && `Color: ${item.selectedColor}`}
+                            </p>
+                          )}
                         </div>
                         
                         <div className="flex items-center justify-between mt-4 sm:mt-6">
                           <div className="flex items-center border border-black/10 h-8 sm:h-10">
                             <button 
                               className="px-2 sm:px-3 h-full text-gray-400 hover:text-black hover:bg-gray-50 disabled:opacity-30 transition-all"
-                              onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                              onClick={() => updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1))}
                               disabled={item.quantity <= 1}
                             >
                               <Minus className="h-2.5 w-2.5 sm:h-3 w-3" />
@@ -96,7 +103,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             <span className="w-8 sm:w-10 text-center text-[10px] sm:text-xs font-bold tracking-widest">{item.quantity}</span>
                             <button 
                               className="px-2 sm:px-3 h-full text-gray-400 hover:text-black hover:bg-gray-50 disabled:opacity-30 transition-all"
-                              onClick={() => updateQuantity(item.id, Math.min(item.stock, item.quantity + 1))}
+                              onClick={() => updateQuantity(item.cartItemId, Math.min(item.stock, item.quantity + 1))}
                               disabled={item.quantity >= item.stock}
                             >
                               <Plus className="h-2.5 w-2.5 sm:h-3 w-3" />
@@ -105,7 +112,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                           <button
                             type="button"
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => removeItem(item.cartItemId)}
                             className="text-gray-300 hover:text-red-500 transition-colors p-2"
                           >
                             <Trash2 className="h-4 w-4" />

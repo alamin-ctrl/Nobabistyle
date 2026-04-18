@@ -320,6 +320,13 @@ export function UserDashboard() {
                                                   <span className="text-gray-200">|</span>
                                                   <p className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-[0.2em] font-bold">৳ {item.price}</p>
                                                 </div>
+                                                {(item.selected_size || item.selected_color) && (
+                                                  <p className="text-[9px] sm:text-[10px] text-gray-500 capitalize tracking-wider mt-1">
+                                                    {item.selected_size && `Size: ${item.selected_size}`}
+                                                    {item.selected_size && item.selected_color && ' | '}
+                                                    {item.selected_color && `Color: ${item.selected_color}`}
+                                                  </p>
+                                                )}
                                               </div>
                                               <div className="text-right">
                                                 <p className="text-xs sm:text-sm font-bold text-black tracking-widest">৳ {item.quantity * item.price}</p>

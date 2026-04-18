@@ -107,7 +107,9 @@ export function Checkout() {
         order_id: order.id,
         product_id: item.id,
         quantity: item.quantity,
-        price: item.discountPrice || item.price
+        price: item.discountPrice || item.price,
+        selected_size: item.selectedSize && item.selectedSize !== 'none' ? item.selectedSize : null,
+        selected_color: item.selectedColor && item.selectedColor !== 'none' ? item.selectedColor : null
       }));
 
       const { error: itemsError } = await supabase

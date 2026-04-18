@@ -24,8 +24,14 @@ create table if not exists public.order_items (
   order_id uuid references public.orders on delete cascade not null,
   product_id uuid references public.products not null,
   quantity integer not null,
-  price numeric not null
+  price numeric not null,
+  selected_size text,
+  selected_color text
 );
+
+-- Ensure columns exist if table was created previously without them
+alter table public.order_items add column if not exists selected_size text;
+alter table public.order_items add column if not exists selected_color text;
 
 alter table public.orders enable row level security;
 alter table public.order_items enable row level security;
@@ -345,6 +351,13 @@ export function AdminOrders() {
                                             <div className="flex-1 min-w-0">
                                               <p className="text-sm font-medium text-gray-900 truncate">{item.products?.name || 'Unknown Product'}</p>
                                               <p className="text-xs text-gray-500">Qty: {item.quantity} × ৳ {item.price}</p>
+                                              {(item.selected_size || item.selected_color) && (
+                                                <p className="text-xs text-gray-400 capitalize mt-0.5">
+                                                  {item.selected_size && `Size: ${item.selected_size}`}
+                                                  {item.selected_size && item.selected_color && ' | '}
+                                                  {item.selected_color && `Color: ${item.selected_color}`}
+                                                </p>
+                                              )}
                                             </div>
                                             <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">৳ {item.quantity * item.price}</p>
                                           </div>

@@ -22,7 +22,24 @@ create table if not exists public.products (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
+-- Add sizes and colors columns if they don't exist
+do $$ 
+begin 
+  if not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'products' and column_name = 'sizes') then
+    alter table public.products add column sizes text[] default '{}';
+  end if;
+  if not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'products' and column_name = 'colors') then
+    alter table public.products add column colors text[] default '{}';
+  end if;
+end $$;
+
 alter table public.products enable row level security;
+
+-- Drop policies IF EXISTS before recreating to prevent duplicate policy errors
+drop policy if exists "Products are viewable by everyone." on public.products;
+drop policy if exists "Admins can insert products." on public.products;
+drop policy if exists "Admins can update products." on public.products;
+drop policy if exists "Admins can delete products." on public.products;
 
 -- Everyone can view products
 create policy "Products are viewable by everyone." 
@@ -62,7 +79,9 @@ export function AdminProducts() {
     stock: '',
     category: 'Men',
     images: '',
-    isDigital: false
+    isDigital: false,
+    sizes: '',
+    colors: ''
   });
 
   useEffect(() => {
@@ -92,6 +111,8 @@ export function AdminProducts() {
           isDigital: d.is_digital,
           rating: d.rating || 0,
           reviews: d.reviews || 0,
+          sizes: d.sizes || [],
+          colors: d.colors || []
         }));
         setProducts(formattedData);
       }
@@ -113,7 +134,9 @@ export function AdminProducts() {
         stock: product.stock.toString(),
         category: product.category,
         images: product.images.join(', '),
-        isDigital: product.isDigital
+        isDigital: product.isDigital,
+        sizes: product.sizes ? product.sizes.join(', ') : '',
+        colors: product.colors ? product.colors.join(', ') : ''
       });
     } else {
       setEditingId(null);
@@ -125,7 +148,9 @@ export function AdminProducts() {
         stock: '',
         category: 'Panjabi',
         images: '',
-        isDigital: false
+        isDigital: false,
+        sizes: '',
+        colors: ''
       });
     }
     setIsFormOpen(true);
@@ -147,7 +172,9 @@ export function AdminProducts() {
         stock: parseInt(formData.stock, 10),
         category: formData.category,
         images: formData.images.split(',').map(s => s.trim()).filter(s => s),
-        is_digital: formData.isDigital
+        is_digital: formData.isDigital,
+        sizes: formData.sizes.split(',').map(s => s.trim()).filter(s => s),
+        colors: formData.colors.split(',').map(s => s.trim()).filter(s => s)
       };
 
       if (editingId) {
@@ -385,6 +412,29 @@ export function AdminProducts() {
                       <option value="Accessories">Accessories</option>
                       <option value="Cosmetics">Cosmetics</option>
                     </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Sizes (comma separated)</label>
+                    <input 
+                      type="text" 
+                      value={formData.sizes}
+                      onChange={e => setFormData({...formData, sizes: e.target.value})}
+                      placeholder="S, M, L, XL, 40, 42"
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Colors (comma separated)</label>
+                    <input 
+                      type="text" 
+                      value={formData.colors}
+                      onChange={e => setFormData({...formData, colors: e.target.value})}
+                      placeholder="Black, White, Red"
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500" 
+                    />
                   </div>
                 </div>
 
